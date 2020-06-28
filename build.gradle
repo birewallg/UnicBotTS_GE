@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group 'local.bwg'
+version '1.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //compile fileTree(include: ['*.jar'], dir: 'libs')
+    //testCompile group: 'junit', name: 'junit', version: '4.12'
+    //compile group: 'com.github.theholywaffle', name: 'teamspeak3-api', version: '1.2.0'
+    compile "org.telegram:telegrambots:4.9"
+    compile group: 'com.github.theholywaffle', name: 'teamspeak3-api', version: '1.0.14'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+}
+
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Main-Class': 'local.bwg.App')
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
