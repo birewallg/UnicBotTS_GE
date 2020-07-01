@@ -146,7 +146,7 @@ public class CoreExp {
 
             //User user = new User(c.getNickname(), c.getId(), c.getUniqueIdentifier());
 
-            User user = saveSupport.load(c.getUniqueIdentifier());
+            User user = (User) saveSupport.load(c.getUniqueIdentifier());
             if (user == null) {
                 user = new User(c.getNickname(), c.getId(), c.getUniqueIdentifier());
             }
@@ -187,7 +187,7 @@ public class CoreExp {
 
                 try {
                     //load user data from file
-                    User user = saveSupport.load(e.getUniqueClientIdentifier());
+                    User user = (User) saveSupport.load(e.getUniqueClientIdentifier());
                     if (user == null) {
                         user = new User(e.getClientNickname(), e.getClientId(), e.getUniqueClientIdentifier());
                     }
@@ -237,6 +237,9 @@ public class CoreExp {
                     if(user != null) {
                         saveLog(user.getuName() + " left server");
                         addLastUser(user);
+
+                        //telegram
+                        appTelegramInline.sendMessage(user.getuName() + " left server");
                     }
 
 
@@ -319,7 +322,7 @@ public class CoreExp {
                             switch (cmd[1]) {
                                 case "all": {
                                     for (String filename : saveSupport.getAllFilesName()) {
-                                        User user = saveSupport.load(filename);
+                                        User user = (User) saveSupport.load(filename);
                                         if (user == null) continue;
                                         String lastLoginDate = saveSupport.getFileLastModified(filename);
                                         api.sendPrivateMessage(e.getInvokerId(),
@@ -341,7 +344,7 @@ public class CoreExp {
                                     break;
                                 }
                                 case "user": {
-                                    User user = saveSupport.load(cmd[2]);
+                                    User user = (User) saveSupport.load(cmd[2]);
                                     String lastlogindate = saveSupport.getFileLastModified(cmd[2]);
                                     api.sendPrivateMessage(e.getInvokerId(),
                                             "\n Name: " + user.getuName()

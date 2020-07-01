@@ -1,12 +1,25 @@
 package local.bwg.telegram;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class TelegramUser {
+public class TelegramUser implements Serializable {
+    private static final long serialVersionUID = -3295590026052296594L;
+
     private String uID;
+    private boolean subscribe = false;
+
 
     TelegramUser(String id){
         this.uID = id;
+    }
+
+    public void setSubscribe(boolean subscribe) {
+        this.subscribe = subscribe;
+    }
+
+    public boolean isSubscribe() {
+        return subscribe;
     }
 
     public String getuID() {

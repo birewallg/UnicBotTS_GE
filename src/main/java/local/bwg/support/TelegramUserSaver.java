@@ -1,40 +1,27 @@
 package local.bwg.support;
 
 import local.bwg.User;
+import local.bwg.telegram.TelegramUser;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.logging.Logger;
 
-public class FileReaderWriterExp implements SaveSupport {
+public class TelegramUserSaver implements SaveSupport {
     Logger logger = Logger.getLogger(this.getClass().getName());
-    @Override
-    public boolean saveLog(String path, String data) {
-        try(FileWriter writer = new FileWriter(path, true)) {
-            Date date = new Date();
-            SimpleDateFormat formatForDateNow
-                    = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss' : '");
 
-            writer.write(formatForDateNow.format(date) + data);
-            writer.append("\n");
-            writer.flush();
-        } catch (IOException e){
-            logger.warning("fileerr");
-            return false;
-        }
-        return true;
+    @Override
+    public boolean saveLog(String line, String data) {
+        return false;
     }
 
     @Override
     public boolean save(Object obj) {
         try {
-            User userObj = (User) obj;
-            FileOutputStream f = new FileOutputStream(new File("udata\\"+userObj.getuUnicID().replaceAll("/", "")));
+            FileOutputStream f = new FileOutputStream(new File("udata_tg\\",((TelegramUser) obj).getuID()));
             ObjectOutputStream o = new ObjectOutputStream(f);
 
-            o.writeObject(userObj);
+            o.writeObject(obj);
 
             o.close();
             f.close();
@@ -47,14 +34,13 @@ public class FileReaderWriterExp implements SaveSupport {
     }
 
     @Override
-    public User load(String path) {
+    public Object load(String line) {
         try {
             FileInputStream fi = new FileInputStream(
-                    new File("udata\\"
-                            + path.replaceAll("/", "")));
+                    new File("udata_tg\\" + line));
             ObjectInputStream oi = new ObjectInputStream(fi);
 
-            User userObj = (User) oi.readObject();
+            TelegramUser userObj = (TelegramUser) oi.readObject();
 
             oi.close();
             fi.close();
@@ -68,13 +54,13 @@ public class FileReaderWriterExp implements SaveSupport {
 
     @Override
     public ArrayList<String> getAllFilesName() {
-        File folder = new File("udata\\");
+        File folder = new File("udata_tg\\");
         File[] listOfFiles = folder.listFiles();
         ArrayList<String> list = new ArrayList<>();
         for (File file : listOfFiles) {
             if (file.isFile()) {
                 list.add(file.getName());
-                //System.out.println(file.getName());
+                System.out.println(file.getName());
             }
         }
         return list;
@@ -82,9 +68,6 @@ public class FileReaderWriterExp implements SaveSupport {
 
     @Override
     public String getFileLastModified(String filename) {
-        File file = new File("udata\\" + filename);
-        //System.out.println("Before Format : " + file.lastModified());
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH|mm");
-        return sdf.format(file.lastModified());
+        return null;
     }
 }

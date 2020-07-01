@@ -1,5 +1,7 @@
 package local.bwg.telegram;
 
+import local.bwg.support.SaveSupport;
+import local.bwg.support.TelegramUserSaver;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -16,11 +18,19 @@ public class TelegramBotCore extends TelegramLongPollingBot {
     private static final String BOT_NAME = "TS3SUnicBotNotiferBot";
     private static final String BOT_TOKEN = "942837035:AAF3dCriN53KD5qtPRQwL6XWQJGqysiFcB0";
 
+    private ArrayList<TelegramUser> observers = new ArrayList<>();
+
+    SaveSupport save = new TelegramUserSaver();
+
     public void sendQuary(String msg) {
         observers.forEach(obs -> sendMessage(obs.getuID(), msg));
     }
 
-    private ArrayList<TelegramUser> observers = new ArrayList<>();
+    TelegramBotCore() {
+        ArrayList<String> uIDlist = save.getAllFilesName();
+        uIDlist.forEach(e -> observers.add((TelegramUser) save.load(e)));
+    }
+
     @Override
     public void onUpdateReceived(Update update) {
         String message = update.getMessage().getText();
@@ -31,9 +41,19 @@ public class TelegramBotCore extends TelegramLongPollingBot {
 
     public void messageSeparator(String id, String message) {
         switch (convertToUTF8(message)) {
+            case "/observers": {
+                StringBuilder msg = new StringBuilder();
+                observers.forEach(e -> {
+                    msg.append(e.getuID()).append("\n");
+                });
+                sendMessage(id, convertToUTF8(msg.toString()));
+                break;
+            }
             case "/sub": {
                 TelegramUser tu = new TelegramUser(id);
                 if (!observers.contains(tu)) {
+                    tu.setSubscribe(true);
+                    save.save((Object) tu);
                     observers.add(tu);
                     sendMessage(id, convertToUTF8("вы подписаны"));
                 } else
