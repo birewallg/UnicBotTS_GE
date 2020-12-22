@@ -2,6 +2,7 @@ package local.bwg;
 
 import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
+import local.bwg.support.VLCSupport;
 import local.bwg.support.WinAPISupport;
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3Config;
@@ -14,6 +15,7 @@ import com.github.theholywaffle.teamspeak3.api.reconnect.ReconnectStrategy;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import local.bwg.telegram.AppTelegramInline;
 
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
@@ -34,6 +36,9 @@ public class CoreExp {
     private static SaveSupport saveSupport;
 
     private static AppTelegramInline appTelegramInline = new AppTelegramInline();
+
+    private static String track = "unknown";
+    private static boolean trackNotify = true;
 
     CoreExp(String address, final String port, final String login, final String password) {
 
@@ -61,21 +66,8 @@ public class CoreExp {
         query.connect();
 
         stuffThatOnlyEverNeedsToBeRunOnce(query.getApi());
-        //doSomethingThatTakesAReallyLongTime(query.getAsyncApi());
-
-        //query.exit();
     }
 
-    /**
-     * TEST
-     */
-    /*public static void main(String[] args) {
-        for (int i = 0; i < 20; i++) {
-            addLastUser(new User("name", i));
-            System.out.print(printLastUsers());
-            System.out.println("-------------");
-        }
-    }*/
     private static String printLastUsers() {
         StringBuilder lusers = new StringBuilder();
         for(User u : lastuserdatabase) {
@@ -91,14 +83,15 @@ public class CoreExp {
     }
 
     private static void stuffThatNeedsToRunEveryTimeTheQueryConnects(final TS3Api api, String login, final String password, String port) {
-        api.selectVirtualServerByPort(Integer.valueOf(port));
+        //api.selectVirtualServerByPort(Integer.valueOf(port));
+        api.selectVirtualServerById(1);
         api.login(login, password);
 
-        api.setNickname("UnicBot");
-        api.moveClient(clientId, 31);
-        api.registerAllEvents();
-
         clientId = api.whoAmI().getId();
+        api.moveClient(clientId, 18);
+
+        api.registerAllEvents();
+        api.setNickname("UnicBot");
 
         saveLog(api.whoAmI().getNickname() + " join server");
 
@@ -126,25 +119,31 @@ public class CoreExp {
                         break;
                     }
                 }
-                /*Map<ChannelProperty, String> options_c2 = new HashMap<>();
-                options_c2.put(CHANNEL_NAME, "[spacer.t2]█     █ █    █ █     █ █     █");
-                api.editChannel(25, options_c2);
-
-                Map<ChannelProperty, String> options_c3 = new HashMap<>();
-                options_c3.put(CHANNEL_NAME, "[spacer.t3]█     █ █    █ █     █ █     █");
-                api.editChannel(26, options_c3);
-
-                Map<ChannelProperty, String> options_c4 = new HashMap<>();
-                options_c4.put(CHANNEL_NAME, "[spacer.t4]▀▄▄▄▀ ▀▄▄▄▀ ▀▄▄▄▀ ▀▄▄▄▀");
-                api.editChannel(27, options_c4);*/
+            }
+        }).start();
+        new Thread(new Runnable() {
+            String temp = "unknown";
+            @Override
+            public void run() {
+                while (true){
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    temp = VLCSupport.GetTrackName();
+                    if (!Objects.equals(track, temp)){
+                        if (trackNotify)
+                            api.sendChannelMessage("Track: " + temp);
+                        track = temp;
+                    }
+                }
             }
         }).start();
     }
 
     private static void buckGroundTasks(final TS3Api api) {
         for (Client c : api.getClients()) {
-
-            //User user = new User(c.getNickname(), c.getId(), c.getUniqueIdentifier());
 
             User user = (User) saveSupport.load(c.getUniqueIdentifier());
             if (user == null) {
@@ -155,10 +154,6 @@ public class CoreExp {
             user.setuName(c.getNickname());
             user.setuID(c.getId());
 
-            /*if (Objects.equals(user.getuName(), "Broker Day 27'")) {
-                user.setLoginnotifyStatus(true);
-                user.setPrivilegeLevel(27);
-            }*/
             userdatabase.add(user);
         }
     }
@@ -176,9 +171,6 @@ public class CoreExp {
                                 "\n !use loginnotify" +
                                 "\n !mytime" +
                                 "\n !wakeup");
-                ///api.sendPrivateMessage(e.getClientId(), "You total time: "+ );
-                //api.sendPrivateMessage(e.getClientId(), " !use loginnotify");
-
                 //log
                 saveLog(e.getClientNickname() + " joined server");
 
@@ -197,11 +189,6 @@ public class CoreExp {
                     user.setuID(e.getClientId());
 
                     api.sendPrivateMessage(e.getClientId(), "You total time: " + user.getTotalTimeString());
-                    /*if (Objects.equals(user.getuName(), "Broker Day 27")) {
-                        user.setLoginnotifyStatus(true);
-                        user.setPrivilegeLevel(27);
-                    }*/
-                    //user.setLoginnotifyStatus(false);
 
                     for (User u : userdatabase) {
                         if(u.getuPrivilegeLevel() == 27) {
@@ -263,11 +250,60 @@ public class CoreExp {
             }
             @Override
             public void onClientMoved(ClientMovedEvent e) {
+                if (e.getTargetChannelId() == 18) {
+                    int movingClientId = e.getClientId();
+                    String name = api.getClientInfo(movingClientId).getNickname();
 
+                    String stationname = VLCSupport.GetStationName();
+                    String trackname = VLCSupport.GetTrackName();
+                    byte[] msg = ("\n Hi, " + name + "\n Station: " + stationname
+                            + "\n Track: " + trackname).getBytes(StandardCharsets.US_ASCII);
+                    api.sendChannelMessage(new String(msg, StandardCharsets.UTF_8));
+                    api.sendChannelMessage(
+                                    "\n Commands: " +
+                                    "\n !track" +
+                                    "\n !station" +
+                                    "\n !next" +
+                                    "\n !prev");
+                    /*
+                    if (Objects.equals(trackname, "unknown")) {
+                        api.sendChannelMessage("Restart...");
+                        if (!WinAPISupport.exRestartFix()) {
+                            api.sendChannelMessage("Sorry the radio does not work");
+                        }
+                    }
+                    */
+                }
             }
             @Override
             public void onTextMessage(TextMessageEvent e) {
                 // Only react to channel messages not sent by the query itself
+                if (e.getTargetMode() == TextMessageTargetMode.CHANNEL
+                        && e.getInvokerId() != clientId
+                        && api.getClientInfo(e.getInvokerId()).getChannelId() == 18) {
+                    String message = e.getMessage().toLowerCase();
+                    /** Music control
+                     * vlc control */
+                    if (message.equals("!track")) {
+                        //api.sendPrivateMessage(e.getInvokerId(), VLCSupport.GetTrackName());
+                        api.sendChannelMessage(VLCSupport.GetTrackName());
+                    } else if (message.equals("!station")) {
+                        //api.sendPrivateMessage(e.getInvokerId(), VLCSupport.GetTrackName());
+                        api.sendChannelMessage(VLCSupport.GetStationName());
+                    } else if(message.startsWith("!next")){
+                        if (VLCSupport.vlcNextTrack()) {
+                            api.sendChannelMessage("Station: " + VLCSupport.GetStationName());
+                        } else {
+                            api.sendChannelMessage("Failed!");
+                        }
+                    } else if(message.startsWith("!prev")){
+                        if (VLCSupport.vlcPrevTrack()) {
+                            api.sendChannelMessage("Station: " + VLCSupport.GetStationName());
+                        } else {
+                            api.sendChannelMessage("Failed!");
+                        }
+                    }
+                }
                 if (e.getTargetMode() == TextMessageTargetMode.CLIENT && e.getInvokerId() != clientId) {
                     String message = e.getMessage().toLowerCase();
                     if (message.startsWith("!last")) {
@@ -306,7 +342,6 @@ public class CoreExp {
                     } else if (message.startsWith("!use")) {
                         //api.sendPrivateMessage(e.getInvokerId(), ": !use notify " );
                         api.sendPrivateMessage(e.getInvokerId(), ": !use loginnotify "  );
-
                     } else if (message.startsWith("!mytime")) {
                         //api.sendPrivateMessage(e.getInvokerId(), ": !use notify " );
                         for (User u : userdatabase) {
@@ -315,7 +350,6 @@ public class CoreExp {
                             }
                         }
                     }
-
                     else if (message.startsWith("!get")) {
                         try {
                             String[] cmd = message.split(" ");

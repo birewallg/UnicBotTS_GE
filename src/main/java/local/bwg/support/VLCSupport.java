@@ -8,10 +8,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
  * http://127.0.0.1:8080/requests/status.xml?command=pl_next&input=http//192.99.62.212:9968/listen.pls?sid=1
+ * 127.0.0.1:8080/requests/status.xml?command=pl_next
  */
 public class VLCSupport {
     public static String GetTrackName() {
@@ -26,7 +28,40 @@ public class VLCSupport {
 
         return getTextObj("title");
     }
+    public static boolean vlcNextTrack(){
+        try {
+            URL url = new URL ("http://127.0.0.1:8080/requests/status.xml?command=pl_next");
 
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setDoOutput(true);
+            connection.setRequestProperty  ("Authorization", "Basic " + DatatypeConverter.printBase64Binary(":1".getBytes()));
+            InputStream content = (InputStream)connection.getInputStream();
+            BufferedReader in   =  new BufferedReader (new InputStreamReader(content, StandardCharsets.UTF_8));
+            in.close();
+            content.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+    public static boolean vlcPrevTrack(){
+        try {
+            URL url = new URL ("http://127.0.0.1:8080/requests/status.xml?command=pl_previous");
+
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setDoOutput(true);
+            connection.setRequestProperty  ("Authorization", "Basic " + DatatypeConverter.printBase64Binary(":1".getBytes()));
+            InputStream content = (InputStream)connection.getInputStream();
+            BufferedReader in   =  new BufferedReader (new InputStreamReader(content, StandardCharsets.UTF_8));
+            in.close();
+            content.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
     public static String vlcOpen(String src){
         String[] par = src.split(" ");
         src = par[par.length-1];
@@ -87,38 +122,4 @@ public class VLCSupport {
         }
         return name;
     }
-/*    static String GetTrackName(){
-        String trackname = "";
-        try {
-            URL url = new URL ("http://127.0.0.1:8080/requests/status.xml");
-
-            String encoding =  DatatypeConverter.printBase64Binary(":1".getBytes());
-
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-            connection.setRequestProperty  ("Authorization", "Basic " + encoding);
-            InputStream content = (InputStream)connection.getInputStream();
-            BufferedReader in   =  new BufferedReader (new InputStreamReader(content));
-
-            String line;
-            while ((line = in.readLine()) != null) {
-                //System.out.println(line);
-                try {
-                    if(line.indexOf("now_playing") != 0)
-                        trackname = line.substring(line.indexOf("now_playing"));
-                } catch (Exception ignored){}
-            }
-            if (!Objects.equals(trackname, "")) {
-                trackname = trackname.substring(trackname.indexOf(">") + 1, trackname.indexOf("<"));
-            } else trackname = "unknown";
-
-            System.out.println(trackname);
-
-        } catch(Exception e) {
-            trackname = "unknown";
-            System.out.print("unknown");
-        }
-        return "Track: " + trackname;
-    }*/
 }

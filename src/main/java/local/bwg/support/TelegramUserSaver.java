@@ -54,14 +54,18 @@ public class TelegramUserSaver implements SaveSupport {
 
     @Override
     public ArrayList<String> getAllFilesName() {
-        File folder = new File("udata_tg\\");
-        File[] listOfFiles = folder.listFiles();
         ArrayList<String> list = new ArrayList<>();
-        for (File file : listOfFiles) {
-            if (file.isFile()) {
-                list.add(file.getName());
-                System.out.println(file.getName());
+        try {
+            File folder = new File("udata_tg\\");
+            File[] listOfFiles = folder.listFiles();
+            for (File file : listOfFiles) {
+                if (file.isFile()) {
+                    list.add(file.getName());
+                    System.out.println(file.getName());
+                }
             }
+        } catch (NullPointerException ignore) {
+            System.out.println("NullPointerException: Directory is not found!");
         }
         return list;
     }
