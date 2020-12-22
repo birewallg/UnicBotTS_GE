@@ -82,11 +82,22 @@ public class TelegramBotCore extends TelegramLongPollingBot {
                 ));
                 break;
             }
-            default: sendMessage(id, convertToUTF8(
-                    "нинаю такого"
-                            + "\n Посмотри что умею:"
-                            + "\n /help"
-            ));
+            default: {
+                try {
+                    if (convertToUTF8(message).toLowerCase().substring(0, 4).equals("/all")) {
+                        sendQuary(message);
+                    } else
+                        sendMessage(id, convertToUTF8(
+                                "не нинаю такого"
+                                        + "\n Посмотри что умею:"
+                                        + "\n /help"));
+                } catch (Exception ignore) {
+                    sendMessage(id, convertToUTF8(
+                            "нинаю такого"
+                                    + "\n Посмотри что умею:"
+                                    + "\n /help"));
+                }
+            }
         }
     }
 
