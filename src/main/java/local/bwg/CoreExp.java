@@ -88,7 +88,7 @@ public class CoreExp {
         api.login(login, password);
 
         clientId = api.whoAmI().getId();
-        api.moveClient(clientId, 18);
+        api.moveClient(clientId, 32);
 
         api.registerAllEvents();
         api.setNickname("UnicBot");
@@ -133,8 +133,12 @@ public class CoreExp {
                     }
                     temp = VLCSupport.GetTrackName();
                     if (!Objects.equals(track, temp)){
-                        if (trackNotify)
-                            api.sendChannelMessage("Track: " + temp);
+                        if (trackNotify) {
+                            Map<ChannelProperty, String> options_c1 = new HashMap<>();
+                            options_c1.put(CHANNEL_NAME, "Track: " + temp);
+                            api.editChannel(31, options_c1);
+                            //api.sendChannelMessage("Track: " + temp);
+                        }
                         track = temp;
                     }
                 }
@@ -250,7 +254,7 @@ public class CoreExp {
             }
             @Override
             public void onClientMoved(ClientMovedEvent e) {
-                if (e.getTargetChannelId() == 18) {
+                if (e.getTargetChannelId() == 32) {
                     int movingClientId = e.getClientId();
                     String name = api.getClientInfo(movingClientId).getNickname();
 
@@ -280,7 +284,7 @@ public class CoreExp {
                 // Only react to channel messages not sent by the query itself
                 if (e.getTargetMode() == TextMessageTargetMode.CHANNEL
                         && e.getInvokerId() != clientId
-                        && api.getClientInfo(e.getInvokerId()).getChannelId() == 18) {
+                        && api.getClientInfo(e.getInvokerId()).getChannelId() == 32) {
                     String message = e.getMessage().toLowerCase();
                     /** Music control
                      * vlc control */
