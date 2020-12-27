@@ -2,6 +2,7 @@ package local.bwg.telegram;
 
 import local.bwg.support.SaveSupport;
 import local.bwg.support.TelegramUserSaver;
+import local.bwg.support.VLCSupport;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -79,7 +80,35 @@ public class TelegramBotCore extends TelegramLongPollingBot {
                                 + "\n /start"
                                 + "\n /sub подписаться на уведомления"
                                 + "\n /unsub отписаться"
+                                + "\n /next"
+                                + "\n /prev"
+                                + "\n /track"
+                                + "\n /station"
                 ));
+                break;
+            }
+            case "/next": {
+                if (VLCSupport.vlcNextTrack()) {
+                    sendMessage(id, convertToUTF8("Station: " + VLCSupport.GetStationName()));
+                } else {
+                    sendMessage(id, convertToUTF8("Failed!"));
+                }
+                break;
+            }
+            case "/prev": {
+                if (VLCSupport.vlcPrevTrack()) {
+                    sendMessage(id, convertToUTF8("Station: " + VLCSupport.GetStationName()));
+                } else {
+                    sendMessage(id, convertToUTF8("Failed!"));
+                }
+                break;
+            }
+            case "/track": {
+                sendMessage(id, convertToUTF8("Track: " + VLCSupport.GetTrackName()));
+                break;
+            }
+            case "/station": {
+                sendMessage(id, convertToUTF8("Station: " + VLCSupport.GetStationName()));
                 break;
             }
             default: {

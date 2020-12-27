@@ -121,26 +121,28 @@ public class CoreExp {
                 }
             }
         }).start();
-        new Thread(new Runnable() {
-            String temp = "unknown";
-            @Override
-            public void run() {
-                while (true){
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    temp = VLCSupport.GetTrackName();
-                    if (!Objects.equals(track, temp)){
-                        if (trackNotify) {
-                            Map<ChannelProperty, String> options_c1 = new HashMap<>();
-                            options_c1.put(CHANNEL_NAME, "Track: " + temp);
-                            api.editChannel(31, options_c1);
-                            //api.sendChannelMessage("Track: " + temp);
-                        }
-                        track = temp;
-                    }
+        new Thread(() -> {
+            String track = "known";
+            String station = "known";
+            while (true){
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                String temp = VLCSupport.GetTrackName();
+                if (!temp.equals(track)){
+                    Map<ChannelProperty, String> options_c1 = new HashMap<>();
+                    options_c1.put(CHANNEL_NAME, "Track: " + temp.replaceAll("[^a-zA-Z0-9æøåÆØÅ_ -]",""));
+                    api.editChannel(31, options_c1);
+                    track = temp;
+                }
+                temp = VLCSupport.GetStationName();
+                if (!temp.equals(station)){
+                    Map<ChannelProperty, String> options_c1 = new HashMap<>();
+                    options_c1.put(CHANNEL_NAME, "Station: " + temp.replaceAll("[^a-zA-Z0-9æøåÆØÅ_ -]",""));
+                    api.editChannel(33, options_c1);
+                    station = temp;
                 }
             }
         }).start();
