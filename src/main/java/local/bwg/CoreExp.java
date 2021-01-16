@@ -130,24 +130,32 @@ public class CoreExp {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                String temp = VLCSupport.GetTrackName();
-                if (!temp.equals(track)){
-                    Map<ChannelProperty, String> options_c1 = new HashMap<>();
-                    options_c1.put(CHANNEL_NAME, "Track: " + temp.replaceAll("[^a-zA-Z0-9æøåÆØÅ_ -]",""));
-                    api.editChannel(31, options_c1);
-                    track = temp;
-                }
-                temp = VLCSupport.GetStationName();
+                String temp = "Station: " + VLCSupport.GetStationName().replaceAll(convertToUTF8("[^0-9A-Za-zа-яА-Я_ -]"), "");
+                temp = (temp.length() > 40) ? temp.substring(0, 39) : temp;
                 if (!temp.equals(station)){
                     Map<ChannelProperty, String> options_c1 = new HashMap<>();
-                    options_c1.put(CHANNEL_NAME, "Station: " + temp.replaceAll("[^a-zA-Z0-9æøåÆØÅ_ -]",""));
+                    options_c1.put(CHANNEL_NAME, temp);
                     api.editChannel(33, options_c1);
+                    if (!temp.equals("Station:"))
+                        saveLog("radiouniclog", VLCSupport.GetStationName());
                     station = temp;
+                }
+                temp = "Track: " + VLCSupport.GetTrackName().replaceAll(convertToUTF8("[^0-9A-Za-zа-яА-Я_ -]"), "").replaceAll("amp", "");
+                temp = (temp.length() > 40) ? temp.substring(0, 39) : temp;
+                if (!temp.equals(track)){
+                    Map<ChannelProperty, String> options_c1 = new HashMap<>();
+                    options_c1.put(CHANNEL_NAME,  temp);
+                    api.editChannel(31, options_c1);
+                    if (!temp.equals("Track:  -"))
+                        saveLog("radiouniclog", VLCSupport.GetTrackName());
+                    track = temp;
                 }
             }
         }).start();
     }
-
+    private static String convertToUTF8(String text) {
+        return new String(text.getBytes(), StandardCharsets.UTF_8);
+    }
     private static void buckGroundTasks(final TS3Api api) {
         for (Client c : api.getClients()) {
 
@@ -260,10 +268,10 @@ public class CoreExp {
                     int movingClientId = e.getClientId();
                     String name = api.getClientInfo(movingClientId).getNickname();
 
-                    String stationname = VLCSupport.GetStationName();
-                    String trackname = VLCSupport.GetTrackName();
+                    String stationname = convertToUTF8(VLCSupport.GetStationName());
+                    String trackname = convertToUTF8(VLCSupport.GetTrackName());
                     byte[] msg = ("\n Hi, " + name + "\n Station: " + stationname
-                            + "\n Track: " + trackname).getBytes(StandardCharsets.US_ASCII);
+                            + "\n Track: " + trackname).getBytes();
                     api.sendChannelMessage(new String(msg, StandardCharsets.UTF_8));
                     api.sendChannelMessage(
                                     "\n Commands: " +
@@ -406,6 +414,10 @@ public class CoreExp {
 
     private static void saveLog(String data){
         saveSupport.saveLog("unicbotlog", data);
+    }
+
+    private static void saveLog(String filename, String data){
+        saveSupport.saveLog(filename, data);
     }
 
     private static void closeBot(String uID) {

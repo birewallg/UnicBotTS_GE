@@ -114,7 +114,7 @@ public class TelegramBotCore extends TelegramLongPollingBot {
             default: {
                 try {
                     if (convertToUTF8(message).toLowerCase().substring(0, 4).equals("/all")) {
-                        sendQuary(message);
+                        sendQuary("Observer: " + message.substring(5));
                     } else
                         sendMessage(id, convertToUTF8(
                                 "не нинаю такого"
