@@ -36,12 +36,15 @@ public class TelegramBotCore extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         String message = update.getMessage().getText();
         logger.info(convertToUTF8(message));
+        logger.info(message);
+        logger.info(convertToASCII(message));
         System.out.println(convertToUTF8(message));
         messageSeparator(update.getMessage().getChatId().toString(), message);
     }
 
     public void messageSeparator(String id, String message) {
-        switch (convertToUTF8(message)) {
+        //String normalMessage = convertToUTF8(message);
+        switch (message) {
             case "/observers": {
                 StringBuilder msg = new StringBuilder();
                 observers.forEach(e -> {
@@ -113,8 +116,89 @@ public class TelegramBotCore extends TelegramLongPollingBot {
             }
             default: {
                 try {
-                    if (convertToUTF8(message).toLowerCase().substring(0, 4).equals("/all")) {
+                    if (message.toLowerCase().substring(0, 4).equals("/all")) {
                         sendQuary("Observer: " + message.substring(5));
+                    } else if (message.toLowerCase().startsWith(convertToUTF8("вопрос"))) {
+                        String[] query = message.split(" ");
+                        switch (query[1]) {
+                            case "31": {
+                                sendMessage(id, convertToUTF8(
+                                        "Какое право дает главе гильдии открытие базы? "
+                                                + "\n"
+                                                + "Ответ — Право выбирать постройки для улучшения."));
+                                break;
+                            }
+                            case "32": {
+                                sendMessage(id, convertToUTF8(
+                                        "Накапливая очки, можно повышать уровень базы гильдии. " +
+                                                "А что влияет на количество этих очков? "
+                                                + "\n"
+                                                + "Ответ — Вклад участников гильдии."));
+                                break;
+                            }
+                            case "33": {
+                                sendMessage(id, convertToUTF8(
+                                        "Для строительства зданий гильдии требуются материалы и время. " +
+                                                "Если использовать больше материалов, можно сократить время. Это верно?"
+                                                + "\n"
+                                                + "Ответ — Да."));
+                                break;
+                            }
+                            case "34": {
+                                sendMessage(id, convertToUTF8(
+                                        "Что получат люди, завершив ежедневное задание Зала единения? "
+                                                + "\n"
+                                                + "Ответ — Лунное железо."));
+                                break;
+                            }
+                            case "35": {
+                                sendMessage(id, convertToUTF8(
+                                        "Представители какой расы обладают третьим глазом? "
+                                                + "\n"
+                                                + "Ответ — Древние."));
+                                break;
+                            }
+                            case "36": {
+                                sendMessage(id, convertToUTF8(
+                                        "В тысячном году на западе Идеального мира появилось и возвысилось новое " +
+                                                "государство — Страна заката или Страна сумерек. В каком году оно исчезло?"
+                                                + "\n"
+                                                + "Ответ — В одна тысяча сорок четвертом."));
+                                break;
+                            }
+                            case "37": {
+                                sendMessage(id, convertToUTF8(
+                                        "Всего за три десятилетия Страна сумерек превратилась в мощную державу. " +
+                                                "Это произошло благодаря загадочному магическому предмету, попавшему в " +
+                                                "руки к ее правителю. Что это был за предмет?"
+                                                + "\n"
+                                                + "Ответ — Золотая маска."));
+                                break;
+                            }
+                            case "38": {
+                                sendMessage(id, convertToUTF8(
+                                        "Царица Минла разделила Чистилище на три области. Что к ним не относится?"
+                                                + "\n"
+                                                + "Ответ — Обитель ужаса."));
+                                break;
+                            }
+                            case "39": {
+                                sendMessage(id, convertToUTF8(
+                                        "Дерево технологий гильдии носит название двадцати восьми созвездий " +
+                                                "китайского зодиака. Какой из следующих древних трактатов не упоминает " +
+                                                "эти созвездия?Дерево технологий гильдии носит название двадцати восьми созвездий китайского зодиака. Какой из следующих древних трактатов не упоминает эти созвездия?"
+                                                + "\n"
+                                                + "Ответ — ‘Сон в красном тереме’."));
+                                break;
+                            }
+                            case "40": {
+                                sendMessage(id, convertToUTF8(
+                                        "Что получает игрок за прохождение Зала закаленного духа?"
+                                                + "\n"
+                                                + "Ответ – Опыт."));
+                                break;
+                            }
+                        }
                     } else
                         sendMessage(id, convertToUTF8(
                                 "не нинаю такого"
@@ -159,5 +243,8 @@ public class TelegramBotCore extends TelegramLongPollingBot {
 
     private String convertToUTF8(String text) {
         return new String(text.getBytes(), StandardCharsets.UTF_8);
+    }
+    private String convertToASCII(String text) {
+        return new String(text.getBytes(), StandardCharsets.US_ASCII);
     }
 }
