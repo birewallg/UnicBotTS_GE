@@ -116,7 +116,7 @@ public class TelegramBotCore extends TelegramLongPollingBot {
             }
             default: {
                 try {
-                    if (message.toLowerCase().substring(0, 4).equals("/all")) {
+                    if (message.toLowerCase().startsWith("/all")) {
                         sendQuary("Observer: " + message.substring(5));
                     } else if (message.toLowerCase().startsWith(convertToUTF8("вопрос"))) {
                         String[] query = message.split(" ");
