@@ -1,5 +1,6 @@
 package local.bwg.telegram;
 
+import local.bwg.model.ClanHole;
 import local.bwg.support.SaveSupport;
 import local.bwg.support.TelegramUserSaver;
 import local.bwg.support.VLCSupport;
@@ -8,6 +9,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -74,14 +77,14 @@ public class TelegramBotCore extends TelegramLongPollingBot {
                 break;
             }
             case "/start": {
-                sendMessage(id, convertToUTF8("дороу"));
+                sendMessage(id, convertToUTF8("дороу чел"));
                 break;
             }
             case "/help": {
                 sendMessage(id, convertToUTF8(
                         "ну давай"
                                 + "\n /start"
-                                + "\n /sub подписаться на уведомления"
+                                + "\n /sub подписаться на уведомления от ts бота"
                                 + "\n /unsub отписаться"
                                 + "\n /next"
                                 + "\n /prev"
@@ -120,85 +123,9 @@ public class TelegramBotCore extends TelegramLongPollingBot {
                         sendQuary("Observer: " + message.substring(5));
                     } else if (message.toLowerCase().startsWith(convertToUTF8("вопрос"))) {
                         String[] query = message.split(" ");
-                        switch (query[1]) {
-                            case "31": {
-                                sendMessage(id, convertToUTF8(
-                                        "Какое право дает главе гильдии открытие базы? "
-                                                + "\n"
-                                                + "Ответ — Право выбирать постройки для улучшения."));
-                                break;
-                            }
-                            case "32": {
-                                sendMessage(id, convertToUTF8(
-                                        "Накапливая очки, можно повышать уровень базы гильдии. " +
-                                                "А что влияет на количество этих очков? "
-                                                + "\n"
-                                                + "Ответ — Вклад участников гильдии."));
-                                break;
-                            }
-                            case "33": {
-                                sendMessage(id, convertToUTF8(
-                                        "Для строительства зданий гильдии требуются материалы и время. " +
-                                                "Если использовать больше материалов, можно сократить время. Это верно?"
-                                                + "\n"
-                                                + "Ответ — Да."));
-                                break;
-                            }
-                            case "34": {
-                                sendMessage(id, convertToUTF8(
-                                        "Что получат люди, завершив ежедневное задание Зала единения? "
-                                                + "\n"
-                                                + "Ответ — Лунное железо."));
-                                break;
-                            }
-                            case "35": {
-                                sendMessage(id, convertToUTF8(
-                                        "Представители какой расы обладают третьим глазом? "
-                                                + "\n"
-                                                + "Ответ — Древние."));
-                                break;
-                            }
-                            case "36": {
-                                sendMessage(id, convertToUTF8(
-                                        "В тысячном году на западе Идеального мира появилось и возвысилось новое " +
-                                                "государство — Страна заката или Страна сумерек. В каком году оно исчезло?"
-                                                + "\n"
-                                                + "Ответ — В одна тысяча сорок четвертом."));
-                                break;
-                            }
-                            case "37": {
-                                sendMessage(id, convertToUTF8(
-                                        "Всего за три десятилетия Страна сумерек превратилась в мощную державу. " +
-                                                "Это произошло благодаря загадочному магическому предмету, попавшему в " +
-                                                "руки к ее правителю. Что это был за предмет?"
-                                                + "\n"
-                                                + "Ответ — Золотая маска."));
-                                break;
-                            }
-                            case "38": {
-                                sendMessage(id, convertToUTF8(
-                                        "Царица Минла разделила Чистилище на три области. Что к ним не относится?"
-                                                + "\n"
-                                                + "Ответ — Обитель ужаса."));
-                                break;
-                            }
-                            case "39": {
-                                sendMessage(id, convertToUTF8(
-                                        "Дерево технологий гильдии носит название двадцати восьми созвездий " +
-                                                "китайского зодиака. Какой из следующих древних трактатов не упоминает " +
-                                                "эти созвездия?Дерево технологий гильдии носит название двадцати восьми созвездий китайского зодиака. Какой из следующих древних трактатов не упоминает эти созвездия?"
-                                                + "\n"
-                                                + "Ответ — ‘Сон в красном тереме’."));
-                                break;
-                            }
-                            case "40": {
-                                sendMessage(id, convertToUTF8(
-                                        "Что получает игрок за прохождение Зала закаленного духа?"
-                                                + "\n"
-                                                + "Ответ – Опыт."));
-                                break;
-                            }
-                        }
+                        sendMessage(id, convertToUTF8(new ClanHole().clanHoleQuestions(query[1])));
+                    } else if (new ClanHole().clanHoleQuestions(message) != null) {
+                        sendMessage(id, convertToUTF8(new ClanHole().clanHoleQuestions(message)));
                     } else
                         sendMessage(id, convertToUTF8(
                                 "не нинаю такого"
@@ -247,4 +174,5 @@ public class TelegramBotCore extends TelegramLongPollingBot {
     private String convertToASCII(String text) {
         return new String(text.getBytes(), StandardCharsets.US_ASCII);
     }
+
 }
