@@ -9,12 +9,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 public class TelegramBotCore extends TelegramLongPollingBot {
     private static Logger logger = Logger.getLogger(TelegramBotCore.class.getName());
