@@ -296,8 +296,9 @@ public class CoreExp {
                         && e.getInvokerId() != clientId
                         && api.getClientInfo(e.getInvokerId()).getChannelId() == 32) {
                     String message = e.getMessage().toLowerCase();
-                    /** Music control
-                     * vlc control */
+                    /* Music control
+                     * vlc control *
+                    */
                     if (message.equals("!track")) {
                         //api.sendPrivateMessage(e.getInvokerId(), VLCSupport.GetTrackName());
                         api.sendChannelMessage(VLCSupport.GetTrackName());
@@ -315,6 +316,17 @@ public class CoreExp {
                             api.sendChannelMessage("Station: " + VLCSupport.GetStationName());
                         } else {
                             api.sendChannelMessage("Failed!");
+                        }
+                    } else if(message.startsWith("!goto")){
+                        try {
+                            String id = message.split(" ")[1];
+                            if (VLCSupport.GoTo(id)) {
+                                api.sendChannelMessage("Station: " + VLCSupport.GetStationName());
+                            } else {
+                                api.sendChannelMessage("Failed!");
+                            }
+                        } catch (Exception ignore) {
+                            api.sendChannelMessage(" !goto 109");
                         }
                     }
                 }

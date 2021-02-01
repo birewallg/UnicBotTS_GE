@@ -25,30 +25,57 @@ public class VLCSupport {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        return getTextObj("title");
+        return "id-" +getTextObj("currentplid") + " " + getTextObj("title");
     }
+
+    /**
+     * go to track from id
+     * @param id id number
+     * @return boolean
+     */
+    public static boolean GoTo(String id){
+        try {
+            URL url = new URL("http://127.0.0.1:8080/requests/status.xml?command=pl_play&id=" + id);
+            return vclControl(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Go to next track
+     * @return boolean
+     */
     public static boolean vlcNextTrack(){
         try {
             URL url = new URL ("http://127.0.0.1:8080/requests/status.xml?command=pl_next");
-
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setDoOutput(true);
-            connection.setRequestProperty  ("Authorization", "Basic " + DatatypeConverter.printBase64Binary(":1".getBytes()));
-            InputStream content = (InputStream)connection.getInputStream();
-            BufferedReader in   =  new BufferedReader (new InputStreamReader(content, StandardCharsets.UTF_8));
-            in.close();
-            content.close();
-            return true;
+            return vclControl(url);
         } catch (IOException e) {
             return false;
         }
     }
+
+    /**
+     * Go to previous track
+     * @return boolean
+     */
     public static boolean vlcPrevTrack(){
         try {
             URL url = new URL ("http://127.0.0.1:8080/requests/status.xml?command=pl_previous");
+            return vclControl(url);
+        } catch (IOException e) {
+            return false;
+        }
+    }
 
+    /**
+     * Sent vlc control commands
+     * @param url command
+     * @return boolean
+     */
+    private static boolean vclControl(URL url) {
+        try {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoOutput(true);
@@ -62,6 +89,8 @@ public class VLCSupport {
             return false;
         }
     }
+
+    @Deprecated
     public static String vlcOpen(String src){
         String[] par = src.split(" ");
         src = par[par.length-1];
@@ -104,7 +133,6 @@ public class VLCSupport {
 
             String line;
             while ((line = in.readLine()) != null) {
-                //System.out.println(line);
                 try {
                     if(line.indexOf(findObj) != 0)
                         name = line.substring(line.indexOf(findObj));

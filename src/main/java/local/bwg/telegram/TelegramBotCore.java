@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class TelegramBotCore extends TelegramLongPollingBot {
-    private static Logger logger = Logger.getLogger(TelegramBotCore.class.getName());
+    private static final Logger logger = Logger.getLogger(TelegramBotCore.class.getName());
 
     private static final String BOT_NAME = "TS3SUnicBotNotiferBot";
     private static final String BOT_TOKEN = "942837035:AAF3dCriN53KD5qtPRQwL6XWQJGqysiFcB0";
@@ -43,7 +43,6 @@ public class TelegramBotCore extends TelegramLongPollingBot {
     }
 
     public void messageSeparator(String id, String message) {
-        //String normalMessage = convertToUTF8(message);
         switch (message) {
             case "/observers": {
                 StringBuilder msg = new StringBuilder();
@@ -87,6 +86,7 @@ public class TelegramBotCore extends TelegramLongPollingBot {
                                 + "\n /prev"
                                 + "\n /track"
                                 + "\n /station"
+                                + "\n /goto [id]"
                 ));
                 break;
             }
@@ -116,7 +116,16 @@ public class TelegramBotCore extends TelegramLongPollingBot {
             }
             default: {
                 try {
-                    if (message.toLowerCase().startsWith("/all")) {
+                    if (message.toLowerCase().startsWith(convertToUTF8("/goto"))) {
+                        String station_id = message.split(" ")[1];
+                        if (VLCSupport.GoTo(station_id)) {
+                            sendMessage(id, convertToUTF8("Station: " + VLCSupport.GetStationName()));
+                        } else {
+                            sendMessage(id, convertToUTF8("Failed!"));
+                        }
+                    } else
+
+                        if (message.toLowerCase().startsWith("/all")) {
                         sendQuary("Observer: " + message.substring(5));
                     } else if (message.toLowerCase().startsWith(convertToUTF8("вопрос"))) {
                         String[] query = message.split(" ");
