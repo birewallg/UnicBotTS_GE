@@ -154,7 +154,7 @@ public class TelegramBotCore extends TelegramLongPollingBot {
      */
     public synchronized void sendMessage(String chatId, String s) {
         SendMessage sendMessage = new SendMessage();
-        sendMessage.enableMarkdown(true);
+        sendMessage.enableMarkdown(false);
         sendMessage.setChatId(chatId);
         sendMessage.setText(s);
         try {
