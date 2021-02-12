@@ -162,6 +162,7 @@ public class CoreExp {
             User user = (User) saveSupport.load(c.getUniqueIdentifier());
             if (user == null) {
                 user = new User(c.getNickname(), c.getId(), c.getUniqueIdentifier());
+                saveSupport.save(user);
             }
 
             user.updateTime();
@@ -196,6 +197,7 @@ public class CoreExp {
                     User user = (User) saveSupport.load(e.getUniqueClientIdentifier());
                     if (user == null) {
                         user = new User(e.getClientNickname(), e.getClientId(), e.getUniqueClientIdentifier());
+                        saveSupport.save(user);
                     }
 
                     user.updateTime();
@@ -275,18 +277,11 @@ public class CoreExp {
                     api.sendChannelMessage(new String(msg, StandardCharsets.UTF_8));
                     api.sendChannelMessage(
                                     "\n Commands: " +
+                                    "\n !use loginnotify или !ln - включить/выключить уведомления" +
                                     "\n !track" +
                                     "\n !station" +
                                     "\n !next" +
                                     "\n !prev");
-                    /*
-                    if (Objects.equals(trackname, "unknown")) {
-                        api.sendChannelMessage("Restart...");
-                        if (!WinAPISupport.exRestartFix()) {
-                            api.sendChannelMessage("Sorry the radio does not work");
-                        }
-                    }
-                    */
                 }
             }
             @Override
@@ -334,7 +329,7 @@ public class CoreExp {
                     String message = e.getMessage().toLowerCase();
                     if (message.startsWith("!last")) {
                         api.sendPrivateMessage(e.getInvokerId(), printLastUsers());
-                    } else if (message.startsWith("!use loginnotify") || message.startsWith("!u l")) {
+                    } else if (message.startsWith("!use loginnotify") || message.startsWith("!ul")) {
                         for (User u : userdatabase) {
                             if (e.getInvokerId() == u.isuID()) {
                                 if (u.isLoginnotifyStatus()) {
@@ -361,8 +356,8 @@ public class CoreExp {
                             }
                         }
                     } else if (message.startsWith("!cmd")) {
-                        WinAPISupport winApi = new WinAPISupport();
-                        winApi.exCMD(message.substring(4));
+                        //WinAPISupport winApi = new WinAPISupport();
+                        //winApi.exCMD(message.substring(4));
                     } else if (message.startsWith("!shutdown 0")) {
                         closeBot(e.getInvokerUniqueId());
                     } else if (message.startsWith("!use")) {
