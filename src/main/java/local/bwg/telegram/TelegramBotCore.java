@@ -1,5 +1,6 @@
 package local.bwg.telegram;
 
+import local.bwg.model.BotOptions;
 import local.bwg.model.ClanHole;
 import local.bwg.support.SaveSupport;
 import local.bwg.support.TelegramUserSaver;
@@ -16,8 +17,8 @@ import java.util.logging.Logger;
 public class TelegramBotCore extends TelegramLongPollingBot {
     private static final Logger logger = Logger.getLogger(TelegramBotCore.class.getName());
 
-    private static final String BOT_NAME = "TS3SUnicBotNotiferBot";
-    private static final String BOT_TOKEN = "942837035:AAF3dCriN53KD5qtPRQwL6XWQJGqysiFcB0";
+    private static final String BOT_NAME = BotOptions.getTelegramBotName();
+    private static final String BOT_TOKEN = BotOptions.getTelegramBotToken();
 
     private ArrayList<TelegramUser> observers = new ArrayList<>();
 
