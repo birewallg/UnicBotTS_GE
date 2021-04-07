@@ -19,9 +19,9 @@ public class App {
                         BotOptions.getTeamspeakBotLogin(),
                         BotOptions.getTeamspeakBotPassword()
                 );
-        } catch (Exception ignore) {
-            ignore.printStackTrace();
-            System.out.printf("\n Error: incorrect parameters\nnot connect to the server");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.print("\n Error: incorrect parameters\nnot connect to the server");
         }
     }
 }

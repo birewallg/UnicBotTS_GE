@@ -3,6 +3,7 @@ package local.bwg.support;
 import java.io.IOException;
 import java.util.Objects;
 
+@Deprecated
 public class WinAPISupport {
 
     static private String[] radioList = new String[]
