@@ -13,6 +13,7 @@ import com.github.theholywaffle.teamspeak3.api.reconnect.ConnectionHandler;
 import com.github.theholywaffle.teamspeak3.api.reconnect.ReconnectStrategy;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import local.bwg.telegram.AppTelegramInline;
+import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -109,6 +110,7 @@ public class CoreExp {
                     for (User u : userdatabase) {
                         if (u.getWakeUp().equals(formatTime)) {
                             api.pokeClient(u.isuID(), "Wake Up!");
+                            u.setWakeUp("");
                         }
                     }
 
@@ -434,4 +436,6 @@ public class CoreExp {
         saveLog(uID + ": shutdown 0");
         System.exit(0);
     }
+
+
 }
