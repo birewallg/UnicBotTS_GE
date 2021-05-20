@@ -360,6 +360,7 @@ public class CoreExp {
                         //WinAPISupport winApi = new WinAPISupport();
                         //winApi.exCMD(message.substring(4));
                     } else if (message.startsWith("!shutdown 0")) {
+                        api.sendPrivateMessage(e.getInvokerId(), ": Bot Close "  );
                         closeBot(e.getInvokerUniqueId());
                     } else if (message.startsWith("!use")) {
                         //api.sendPrivateMessage(e.getInvokerId(), ": !use notify " );
