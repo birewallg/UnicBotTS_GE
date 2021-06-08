@@ -1,7 +1,6 @@
 package local.bwg.telegram;
 
 import local.bwg.model.BotOptions;
-import local.bwg.model.ClanHole;
 import local.bwg.support.SaveSupport;
 import local.bwg.support.TelegramUserSaver;
 import local.bwg.support.VLCSupport;
@@ -128,12 +127,12 @@ public class TelegramBotCore extends TelegramLongPollingBot {
 
                         if (message.toLowerCase().startsWith("/all")) {
                         sendQuary("Observer: " + message.substring(5));
-                    } else if (message.toLowerCase().startsWith(convertToUTF8("вопрос"))) {
+                    } /*else if (message.toLowerCase().startsWith(convertToUTF8("вопрос"))) {
                         String[] query = message.split(" ");
                         sendMessage(id, convertToUTF8(new ClanHole().clanHoleQuestions(query[1])));
                     } else if (new ClanHole().clanHoleQuestions(message) != null) {
                         sendMessage(id, convertToUTF8(new ClanHole().clanHoleQuestions(message)));
-                    } else
+                    }*/ else
                         sendMessage(id, convertToUTF8(
                                 "не нинаю такого"
                                         + "\n Посмотри что умею:"
