@@ -4,6 +4,10 @@ import local.bwg.User;
 import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
 import org.json.JSONObject;
+import org.junit.Test;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class JsonConvertor {
     private static SaveSupport saveSupport;
@@ -29,6 +33,7 @@ public class JsonConvertor {
             json.put("wakeUp", user.isLoginnotifyStatus());
 
             System.out.println(json);
+            fileJsonSave(json);
             /*String lastLoginDate = saveSupport.getFileLastModified(filename);
             api.sendPrivateMessage(e.getInvokerId(),
                     "\n Name: " + user.getuName()
@@ -38,5 +43,14 @@ public class JsonConvertor {
             );*/
         }
 
+    }
+
+    public static void fileJsonSave(JSONObject json) {
+        try (FileWriter file = new FileWriter("udata/test.json")) {
+            file.write(json.toString());
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
