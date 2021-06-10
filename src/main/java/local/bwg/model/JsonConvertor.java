@@ -33,7 +33,7 @@ public class JsonConvertor {
             json.put("wakeUp", user.isLoginnotifyStatus());
 
             System.out.println(json);
-            fileJsonSave(json);
+            fileJsonSave(json, filename);
             /*String lastLoginDate = saveSupport.getFileLastModified(filename);
             api.sendPrivateMessage(e.getInvokerId(),
                     "\n Name: " + user.getuName()
@@ -45,8 +45,8 @@ public class JsonConvertor {
 
     }
 
-    public static void fileJsonSave(JSONObject json) {
-        try (FileWriter file = new FileWriter("udata/test.json")) {
+    public static void fileJsonSave(JSONObject json, String filename) {
+        try (FileWriter file = new FileWriter("udata-json/" + filename)) {
             file.write(json.toString());
             file.flush();
         } catch (IOException e) {
