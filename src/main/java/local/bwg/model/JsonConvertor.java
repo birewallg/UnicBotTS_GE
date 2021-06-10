@@ -18,18 +18,18 @@ public class JsonConvertor {
 
     public static void main(String[] args) {
         JsonConvertor jsonConvertor = new JsonConvertor();
-        if (args.length == 1) jsonConvertor.convert(args[0]);
-        jsonConvertor.convert("udata-json/");
+        if (args.length == 2) jsonConvertor.convert(args[0], args[1]);
+        jsonConvertor.convert(null, "udata-json/");
     }
 
-    public JsonConvertor(){
+    public JsonConvertor() {
         logger.info("Json convertor initialization...");
     }
 
     /**
      * convert all files to json
      */
-    private void convert(String toPath) {
+    private void convert(String fromPath, String toPath) {
         logger.info(
                 "Create directory "
                 + toPath + ": "
@@ -38,10 +38,10 @@ public class JsonConvertor {
 
         SaveSupport saveSupport = new FileReaderWriterExp();
         for (String filename : saveSupport.getAllFilesName()) {
-            User user = (User) saveSupport.load(filename);
+            User user = (User) saveSupport.load(filename);//убрать
             if (user == null) continue;
             JSONObject json = user.getJSONObject();
-            fileJsonSave(user.getJSONObject(), toPath, filename);
+            jsonFileWriter(user.getJSONObject(), toPath, filename);
             logger.info("Convert object: " + json);
         }
     }
@@ -49,15 +49,19 @@ public class JsonConvertor {
     /**
      * Save json file
      * @param json json object
-     * @param path path
+     * @param path filepath
+     * @param filename filename
      */
-    public void fileJsonSave(JSONObject json, String path, String filename) {
+    @SuppressWarnings("UnusedReturnValue")
+    public boolean jsonFileWriter(JSONObject json, String path, String filename) {
         try (FileWriter file = new FileWriter(path + filename)) {
             file.write(json.toString());
             file.flush();
+            return true;
         } catch (IOException exception) {
             logger.info(exception.getMessage());
         }
+        return false;
     }
 
     /**
