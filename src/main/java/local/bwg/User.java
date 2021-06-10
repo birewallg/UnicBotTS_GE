@@ -1,13 +1,17 @@
 package local.bwg;
 
+import local.bwg.model.JsonConvertor;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Logger;
 
 public class User implements Serializable {
     private static final long serialVersionUID = -3295590026052296592L;
-
+    private static final Logger logger = Logger.getLogger(User.class.getName());
 
     private String uName = "unknown";
     private int uID = 0;
@@ -18,6 +22,19 @@ public class User implements Serializable {
     private String wakeUp = "";
 
     private boolean loginnotifyStatus = false;
+
+    public JSONObject getJSONObject() {
+        JSONObject json = new JSONObject();
+        json.put("uName", this.getuName());
+        json.put("uID", this.isuID());
+        json.put("uUnicID", this.getuUnicID());
+        json.put("uPrivilegeLevel", this.getuPrivilegeLevel());
+        json.put("time", this.getTime());
+        json.put("totalTime", this.getTotalTime());
+        json.put("wakeUp", this.getWakeUp());
+        json.put("isLoginnotifyStatus", this.isLoginnotifyStatus());
+        return json;
+    }
 
     public User(String name, int id, String uUnicID){
         this.uName = name;
