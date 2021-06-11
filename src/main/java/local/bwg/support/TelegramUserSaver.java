@@ -1,7 +1,6 @@
 package local.bwg.support;
 
-import local.bwg.User;
-import local.bwg.telegram.TelegramUser;
+import local.bwg.model.TelegramUser;
 
 import java.io.*;
 import java.util.ArrayList;

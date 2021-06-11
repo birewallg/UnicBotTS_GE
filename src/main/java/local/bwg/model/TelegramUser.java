@@ -1,4 +1,4 @@
-package local.bwg.telegram;
+package local.bwg.model;
 
 import java.io.Serializable;
 import java.util.Objects;

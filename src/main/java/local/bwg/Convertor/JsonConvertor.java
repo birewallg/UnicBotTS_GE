@@ -1,6 +1,7 @@
-package local.bwg.model;
+package local.bwg.Convertor;
 
-import local.bwg.User;
+import local.bwg.model.AbstractUser;
+import local.bwg.model.TeamspeakUser;
 import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
 import org.json.JSONObject;
@@ -18,8 +19,9 @@ public class JsonConvertor {
 
     public static void main(String[] args) {
         JsonConvertor jsonConvertor = new JsonConvertor();
-        if (args.length == 2) jsonConvertor.convert(args[0], args[1]);
-        jsonConvertor.convert(null, "udata-json/");
+        //if (args.length == 2) jsonConvertor.convert(null, args[0], args[1]);
+        jsonConvertor.convert(new TeamspeakUser(), null, "udata-json/");
+        jsonConvertor.convert(new TeamspeakUser(), null, "udata_tg-json/");
     }
 
     public JsonConvertor() {
@@ -29,7 +31,7 @@ public class JsonConvertor {
     /**
      * convert all files to json
      */
-    private void convert(String fromPath, String toPath) {
+    private void convert(Object object, String fromPath, String toPath) {
         logger.info(
                 "Create directory "
                 + toPath + ": "
@@ -38,7 +40,7 @@ public class JsonConvertor {
 
         SaveSupport saveSupport = new FileReaderWriterExp();
         for (String filename : saveSupport.getAllFilesName()) {
-            User user = (User) saveSupport.load(filename);//убрать
+            AbstractUser user = (TeamspeakUser) saveSupport.load(filename);//убрать хуйня какая-то
             if (user == null) continue;
             JSONObject json = user.getJSONObject();
             jsonFileWriter(user.getJSONObject(), toPath, filename);
@@ -69,6 +71,7 @@ public class JsonConvertor {
      * @param path path
      * @return boolean
      */
+    @SuppressWarnings("UnusedReturnValue")
     private boolean createDirectory(String path) {
         File fileDir = new File(path);
         if (!fileDir.exists())

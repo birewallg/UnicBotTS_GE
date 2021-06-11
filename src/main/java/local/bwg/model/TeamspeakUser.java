@@ -1,17 +1,15 @@
-package local.bwg;
+package local.bwg.model;
 
-import local.bwg.model.JsonConvertor;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
-public class User implements Serializable {
+public class TeamspeakUser extends AbstractUser implements Serializable {
     private static final long serialVersionUID = -3295590026052296592L;
-    private static final Logger logger = Logger.getLogger(User.class.getName());
+    private static final Logger logger = Logger.getLogger(TeamspeakUser.class.getName());
 
     private String uName = "unknown";
     private int uID = 0;
@@ -21,8 +19,9 @@ public class User implements Serializable {
     private long totalTime = 0;
     private String wakeUp = "";
 
-    private boolean loginnotifyStatus = false;
+    private boolean loginNotifyStatus = false;
 
+    @Override
     public JSONObject getJSONObject() {
         JSONObject json = new JSONObject();
         json.put("uName", this.getuName());
@@ -32,11 +31,29 @@ public class User implements Serializable {
         json.put("time", this.getTime());
         json.put("totalTime", this.getTotalTime());
         json.put("wakeUp", this.getWakeUp());
-        json.put("isLoginnotifyStatus", this.isLoginnotifyStatus());
+        json.put("isLoginNotifyStatus", this.isLoginNotifyStatus());
         return json;
     }
 
-    public User(String name, int id, String uUnicID){
+    @Override
+    public void loadFromSirializeble(Object object) {
+        try {
+            TeamspeakUser user = (TeamspeakUser) object;
+            this.uName = user.uName;
+            this.uID = user.uID;
+            this.uUnicID = user.uUnicID;
+            this.uPrivilegeLevel = user.uPrivilegeLevel;
+            this.time = user.time;
+            this.totalTime = user.totalTime;
+            this.wakeUp = user.wakeUp;
+            this.loginNotifyStatus = user.loginNotifyStatus;
+        } catch (Exception ignore) {
+        }
+    }
+
+    public TeamspeakUser() { }
+
+    public TeamspeakUser(String name, int id, String uUnicID){
         this.uName = name;
         this.uID = id;
         this.uUnicID = uUnicID;
@@ -46,15 +63,13 @@ public class User implements Serializable {
 
     public void updateTime() {
         Date date = new Date();
-        SimpleDateFormat formatForDateNow
-                = new SimpleDateFormat("HH:mm:ss");
+        //SimpleDateFormat formatForDateNow = new SimpleDateFormat("HH:mm:ss");
         this.time = date.getTime();//formatForDateNow.format(date);
     }
 
     public void updateTotalTime() {
         Date date = new Date();
-        SimpleDateFormat format
-                = new SimpleDateFormat("HH:mm:ss");
+        //SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 
         long diffTime = date.getTime() - this.time;
         //String diffTime = calcTime(this.time, format.format(date));
@@ -131,8 +146,8 @@ public class User implements Serializable {
         return totalTime;
     }
 
-    public boolean isLoginnotifyStatus() {
-        return loginnotifyStatus;
+    public boolean isLoginNotifyStatus() {
+        return loginNotifyStatus;
     }
 
     public String getuUnicID() {
@@ -155,8 +170,8 @@ public class User implements Serializable {
         return uPrivilegeLevel;
     }
 
-    public void setLoginnotifyStatus(boolean loginnotifyStatus) {
-        this.loginnotifyStatus = loginnotifyStatus;
+    public void setLoginNotifyStatus(boolean loginNotifyStatus) {
+        this.loginNotifyStatus = loginNotifyStatus;
     }
 
     public void setPrivilegeLevel(int level) {

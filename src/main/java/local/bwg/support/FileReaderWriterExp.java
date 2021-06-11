@@ -1,6 +1,6 @@
 package local.bwg.support;
 
-import local.bwg.User;
+import local.bwg.model.TeamspeakUser;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -30,7 +30,7 @@ public class FileReaderWriterExp implements SaveSupport {
     @Override
     public boolean save(Object obj) {
         try {
-            User userObj = (User) obj;
+            TeamspeakUser userObj = (TeamspeakUser) obj;
             FileOutputStream f = new FileOutputStream(new File("udata\\"+userObj.getuUnicID().replaceAll("/", "")));
             ObjectOutputStream o = new ObjectOutputStream(f);
 
@@ -47,14 +47,14 @@ public class FileReaderWriterExp implements SaveSupport {
     }
 
     @Override
-    public User load(String path) {
+    public TeamspeakUser load(String path) {
         try {
             FileInputStream fi = new FileInputStream(
                     new File("udata\\"
                             + path.replaceAll("/", "")));
             ObjectInputStream oi = new ObjectInputStream(fi);
 
-            User userObj = (User) oi.readObject();
+            TeamspeakUser userObj = (TeamspeakUser) oi.readObject();
 
             oi.close();
             fi.close();

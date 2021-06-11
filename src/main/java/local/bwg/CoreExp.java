@@ -1,5 +1,6 @@
 package local.bwg;
 
+import local.bwg.model.TeamspeakUser;
 import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
 import local.bwg.support.VLCSupport;
@@ -13,7 +14,6 @@ import com.github.theholywaffle.teamspeak3.api.reconnect.ConnectionHandler;
 import com.github.theholywaffle.teamspeak3.api.reconnect.ReconnectStrategy;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import local.bwg.telegram.AppTelegramInline;
-import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -29,9 +29,9 @@ import static com.github.theholywaffle.teamspeak3.api.ChannelProperty.CHANNEL_NA
 public class CoreExp {
     private static volatile int clientId;
 
-    private static ArrayList<User> userdatabase = new ArrayList<>();
+    private static ArrayList<TeamspeakUser> userdatabase = new ArrayList<>();
 
-    private static ArrayList<User> lastuserdatabase = new ArrayList<>();
+    private static ArrayList<TeamspeakUser> lastuserdatabase = new ArrayList<>();
 
     private static SaveSupport saveSupport;
 
@@ -70,12 +70,12 @@ public class CoreExp {
 
     private static String printLastUsers() {
         StringBuilder lusers = new StringBuilder();
-        for(User u : lastuserdatabase) {
+        for(TeamspeakUser u : lastuserdatabase) {
             lusers.append("\n").append(u.getTime()).append(": ").append(u.getuName());
         }
         return lusers.toString();
     }
-    private static void addLastUser(User user) {
+    private static void addLastUser(TeamspeakUser user) {
         if (lastuserdatabase.size() > 15) {
             lastuserdatabase.remove(lastuserdatabase.size()-1);
         }
@@ -107,7 +107,7 @@ public class CoreExp {
                     options_c1.put(CHANNEL_NAME, "[spacer.time]   TIME : " + formatTime + "  UTC+9");
                     api.editChannel(22, options_c1);
 
-                    for (User u : userdatabase) {
+                    for (TeamspeakUser u : userdatabase) {
                         if (u.getWakeUp().equals(formatTime)) {
                             api.pokeClient(u.isuID(), "Wake Up!");
                             u.setWakeUp("");
@@ -160,9 +160,9 @@ public class CoreExp {
     private static void buckGroundTasks(final TS3Api api) {
         for (Client c : api.getClients()) {
 
-            User user = (User) saveSupport.load(c.getUniqueIdentifier());
+            TeamspeakUser user = (TeamspeakUser) saveSupport.load(c.getUniqueIdentifier());
             if (user == null) {
-                user = new User(c.getNickname(), c.getId(), c.getUniqueIdentifier());
+                user = new TeamspeakUser(c.getNickname(), c.getId(), c.getUniqueIdentifier());
                 saveSupport.save(user);
             }
 
@@ -195,9 +195,9 @@ public class CoreExp {
 
                 try {
                     //load user data from file
-                    User user = (User) saveSupport.load(e.getUniqueClientIdentifier());
+                    TeamspeakUser user = (TeamspeakUser) saveSupport.load(e.getUniqueClientIdentifier());
                     if (user == null) {
-                        user = new User(e.getClientNickname(), e.getClientId(), e.getUniqueClientIdentifier());
+                        user = new TeamspeakUser(e.getClientNickname(), e.getClientId(), e.getUniqueClientIdentifier());
                         saveSupport.save(user);
                     }
 
@@ -207,11 +207,11 @@ public class CoreExp {
 
                     api.sendPrivateMessage(e.getClientId(), "You total time: " + user.getTotalTimeString());
 
-                    for (User u : userdatabase) {
+                    for (TeamspeakUser u : userdatabase) {
                         if(u.getuPrivilegeLevel() == 27) {
                             api.sendPrivateMessage(u.isuID(), "ui: " + e.getUniqueClientIdentifier());
                         }
-                        if(u.isLoginnotifyStatus()) {
+                        if(u.isLoginNotifyStatus()) {
                             api.sendPrivateMessage(u.isuID(),user.getuName() + " join server.");
                         }
                         if(u.isuID() == e.getClientId()) {
@@ -229,8 +229,8 @@ public class CoreExp {
             @Override
             public void onClientLeave(ClientLeaveEvent e) {
                 try {
-                    User user = null;
-                    for (User u : userdatabase) {
+                    TeamspeakUser user = null;
+                    for (TeamspeakUser u : userdatabase) {
                         if(e.getClientId() == u.isuID()){
                             user = u;
                             break;
@@ -247,8 +247,8 @@ public class CoreExp {
                     }
 
 
-                    for (User u : userdatabase) {
-                        if(u.isLoginnotifyStatus()) {
+                    for (TeamspeakUser u : userdatabase) {
+                        if(u.isLoginNotifyStatus()) {
                             if(user != null)
                                 api.sendPrivateMessage(u.isuID(),user.getuName() + " left server.");
                         }
@@ -331,20 +331,20 @@ public class CoreExp {
                     if (message.startsWith("!last")) {
                         api.sendPrivateMessage(e.getInvokerId(), printLastUsers());
                     } else if (message.startsWith("!use loginnotify") || message.startsWith("!ul")) {
-                        for (User u : userdatabase) {
+                        for (TeamspeakUser u : userdatabase) {
                             if (e.getInvokerId() == u.isuID()) {
-                                if (u.isLoginnotifyStatus()) {
-                                    u.setLoginnotifyStatus(false);
+                                if (u.isLoginNotifyStatus()) {
+                                    u.setLoginNotifyStatus(false);
                                     api.sendPrivateMessage(e.getInvokerId(), "Login notification is off for u.");
                                 } else {
-                                    u.setLoginnotifyStatus(true);
+                                    u.setLoginNotifyStatus(true);
                                     api.sendPrivateMessage(e.getInvokerId(), "Login notification is on for u.");
                                 }
                                 break;
                             }
                         }
                     } else if (message.startsWith("!wakeup")){
-                        for (User u : userdatabase) {
+                        for (TeamspeakUser u : userdatabase) {
                             if (e.getInvokerId() == u.isuID()) {
                                 try {
                                     u.setWakeUp(message.substring(8));
@@ -367,7 +367,7 @@ public class CoreExp {
                         api.sendPrivateMessage(e.getInvokerId(), ": !use loginnotify "  );
                     } else if (message.startsWith("!mytime")) {
                         //api.sendPrivateMessage(e.getInvokerId(), ": !use notify " );
-                        for (User u : userdatabase) {
+                        for (TeamspeakUser u : userdatabase) {
                             if (e.getInvokerId() == u.isuID()) {
                                 api.sendPrivateMessage(e.getInvokerId(), "Total time : " + u.getTotalTimeString());
                             }
@@ -379,7 +379,7 @@ public class CoreExp {
                             switch (cmd[1]) {
                                 case "all": {
                                     for (String filename : saveSupport.getAllFilesName()) {
-                                        User user = (User) saveSupport.load(filename);
+                                        TeamspeakUser user = (TeamspeakUser) saveSupport.load(filename);
                                         if (user == null) continue;
                                         String lastLoginDate = saveSupport.getFileLastModified(filename);
                                         api.sendPrivateMessage(e.getInvokerId(),
@@ -392,7 +392,7 @@ public class CoreExp {
                                     break;
                                 }
                                 case "users": {
-                                    for (User u : userdatabase) {
+                                    for (TeamspeakUser u : userdatabase) {
                                         api.sendPrivateMessage(e.getInvokerId(),
                                                 "\n Name: " + u.getuName()
                                                         + "\n Identifier: " + u.getuUnicID()
@@ -401,7 +401,7 @@ public class CoreExp {
                                     break;
                                 }
                                 case "user": {
-                                    User user = (User) saveSupport.load(cmd[2]);
+                                    TeamspeakUser user = (TeamspeakUser) saveSupport.load(cmd[2]);
                                     String lastlogindate = saveSupport.getFileLastModified(cmd[2]);
                                     api.sendPrivateMessage(e.getInvokerId(),
                                             "\n Name: " + user.getuName()
@@ -430,7 +430,7 @@ public class CoreExp {
     }
 
     private static void closeBot(String uID) {
-        for (User u : userdatabase) {
+        for (TeamspeakUser u : userdatabase) {
             u.updateTotalTime();
             saveSupport.save(u);
         }

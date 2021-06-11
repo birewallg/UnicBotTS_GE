@@ -1,6 +1,7 @@
 package local.bwg.telegram;
 
 import local.bwg.model.BotOptions;
+import local.bwg.model.TelegramUser;
 import local.bwg.support.SaveSupport;
 import local.bwg.support.TelegramUserSaver;
 import local.bwg.support.VLCSupport;

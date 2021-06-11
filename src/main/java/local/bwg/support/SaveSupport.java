@@ -1,7 +1,5 @@
 package local.bwg.support;
 
-import local.bwg.User;
-
 import java.util.ArrayList;
 
 public interface SaveSupport {
