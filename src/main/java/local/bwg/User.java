@@ -3,7 +3,6 @@ package local.bwg;
 import local.bwg.model.InterfaceUser;
 import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
-import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -27,9 +26,7 @@ public class User implements Serializable, InterfaceUser {
     /**
      * Convert model to SimpleJson
      * @return json object
-     */
-    @Override
-    @Deprecated
+
     public JSONObject getJSONObject() {
         JSONObject json = new JSONObject();
         json.put("ClassName", "TeamspeakUser");
@@ -42,7 +39,7 @@ public class User implements Serializable, InterfaceUser {
         json.put("wakeUp", this.getWakeUp());
         json.put("isLoginNotifyStatus", this.isLoginNotifyStatus());
         return json;
-    }
+    }*/
 
     @Override
     public boolean loadFromSirializeble(String source) {

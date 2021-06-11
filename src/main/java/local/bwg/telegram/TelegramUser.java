@@ -1,9 +1,12 @@
-package local.bwg.model;
+package local.bwg.telegram;
+
+import local.bwg.model.InterfaceUser;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-public class TelegramUser implements Serializable {
+public class TelegramUser implements Serializable, InterfaceUser {
     private static final long serialVersionUID = -3295590026052296594L;
 
     private String uID;
@@ -37,5 +40,15 @@ public class TelegramUser implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(uID);
+    }
+
+    @Override
+    public JSONObject getJSONObject() {
+        return null;
+    }
+
+    @Override
+    public boolean loadFromSirializeble(String source) {
+        return false;
     }
 }

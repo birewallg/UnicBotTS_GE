@@ -20,6 +20,7 @@ dependencies {
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    // https://github.com/google/gson/blob/master/UserGuide.md#TOC-Gson-With-Maven
     implementation 'com.google.code.gson:gson:2.8.7'
 }
 

@@ -48,7 +48,7 @@ public class JsonConvertor {
             Gson gson = new Gson();
             String json = gson.toJson(user);
             jsonFileWriter(json, toPath, filename);
-            logger.info("Convert Done! object: " + json);
+            logger.info("Convert Done! Object: " + json);
         }
     }
 
