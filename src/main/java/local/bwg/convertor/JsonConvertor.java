@@ -1,7 +1,7 @@
-package local.bwg.Convertor;
+package local.bwg.convertor;
 
-import local.bwg.model.AbstractUser;
-import local.bwg.model.TeamspeakUser;
+import local.bwg.model.InterfaceUser;
+import local.bwg.User;
 import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
 import org.json.JSONObject;
@@ -20,8 +20,8 @@ public class JsonConvertor {
     public static void main(String[] args) {
         JsonConvertor jsonConvertor = new JsonConvertor();
         //if (args.length == 2) jsonConvertor.convert(null, args[0], args[1]);
-        jsonConvertor.convert(new TeamspeakUser(), null, "udata-json/");
-        jsonConvertor.convert(new TeamspeakUser(), null, "udata_tg-json/");
+        jsonConvertor.convert(new User(), null, "udata-json/");
+        //jsonConvertor.convert(new TelegramUser(), null, "udata_tg-json/");
     }
 
     public JsonConvertor() {
@@ -31,7 +31,7 @@ public class JsonConvertor {
     /**
      * convert all files to json
      */
-    private void convert(Object object, String fromPath, String toPath) {
+    private void convert(InterfaceUser user, String fromPath, String toPath) {
         logger.info(
                 "Create directory "
                 + toPath + ": "
@@ -40,8 +40,10 @@ public class JsonConvertor {
 
         SaveSupport saveSupport = new FileReaderWriterExp();
         for (String filename : saveSupport.getAllFilesName()) {
-            AbstractUser user = (TeamspeakUser) saveSupport.load(filename);//убрать хуйня какая-то
-            if (user == null) continue;
+            if (!user.loadFromSirializeble(filename)) {
+                logger.info("Convert error! File: " + filename);
+                continue;
+            }
             JSONObject json = user.getJSONObject();
             jsonFileWriter(user.getJSONObject(), toPath, filename);
             logger.info("Convert object: " + json);

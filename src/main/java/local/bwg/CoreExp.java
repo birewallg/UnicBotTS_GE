@@ -1,6 +1,5 @@
 package local.bwg;
 
-import local.bwg.model.TeamspeakUser;
 import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
 import local.bwg.support.VLCSupport;
@@ -29,9 +28,9 @@ import static com.github.theholywaffle.teamspeak3.api.ChannelProperty.CHANNEL_NA
 public class CoreExp {
     private static volatile int clientId;
 
-    private static ArrayList<TeamspeakUser> userdatabase = new ArrayList<>();
+    private static ArrayList<User> userdatabase = new ArrayList<>();
 
-    private static ArrayList<TeamspeakUser> lastuserdatabase = new ArrayList<>();
+    private static ArrayList<User> lastuserdatabase = new ArrayList<>();
 
     private static SaveSupport saveSupport;
 
@@ -70,12 +69,12 @@ public class CoreExp {
 
     private static String printLastUsers() {
         StringBuilder lusers = new StringBuilder();
-        for(TeamspeakUser u : lastuserdatabase) {
+        for(User u : lastuserdatabase) {
             lusers.append("\n").append(u.getTime()).append(": ").append(u.getuName());
         }
         return lusers.toString();
     }
-    private static void addLastUser(TeamspeakUser user) {
+    private static void addLastUser(User user) {
         if (lastuserdatabase.size() > 15) {
             lastuserdatabase.remove(lastuserdatabase.size()-1);
         }
@@ -107,7 +106,7 @@ public class CoreExp {
                     options_c1.put(CHANNEL_NAME, "[spacer.time]   TIME : " + formatTime + "  UTC+9");
                     api.editChannel(22, options_c1);
 
-                    for (TeamspeakUser u : userdatabase) {
+                    for (User u : userdatabase) {
                         if (u.getWakeUp().equals(formatTime)) {
                             api.pokeClient(u.isuID(), "Wake Up!");
                             u.setWakeUp("");
@@ -160,9 +159,9 @@ public class CoreExp {
     private static void buckGroundTasks(final TS3Api api) {
         for (Client c : api.getClients()) {
 
-            TeamspeakUser user = (TeamspeakUser) saveSupport.load(c.getUniqueIdentifier());
+            User user = (User) saveSupport.load(c.getUniqueIdentifier());
             if (user == null) {
-                user = new TeamspeakUser(c.getNickname(), c.getId(), c.getUniqueIdentifier());
+                user = new User(c.getNickname(), c.getId(), c.getUniqueIdentifier());
                 saveSupport.save(user);
             }
 
@@ -195,9 +194,9 @@ public class CoreExp {
 
                 try {
                     //load user data from file
-                    TeamspeakUser user = (TeamspeakUser) saveSupport.load(e.getUniqueClientIdentifier());
+                    User user = (User) saveSupport.load(e.getUniqueClientIdentifier());
                     if (user == null) {
-                        user = new TeamspeakUser(e.getClientNickname(), e.getClientId(), e.getUniqueClientIdentifier());
+                        user = new User(e.getClientNickname(), e.getClientId(), e.getUniqueClientIdentifier());
                         saveSupport.save(user);
                     }
 
@@ -207,7 +206,7 @@ public class CoreExp {
 
                     api.sendPrivateMessage(e.getClientId(), "You total time: " + user.getTotalTimeString());
 
-                    for (TeamspeakUser u : userdatabase) {
+                    for (User u : userdatabase) {
                         if(u.getuPrivilegeLevel() == 27) {
                             api.sendPrivateMessage(u.isuID(), "ui: " + e.getUniqueClientIdentifier());
                         }
@@ -229,8 +228,8 @@ public class CoreExp {
             @Override
             public void onClientLeave(ClientLeaveEvent e) {
                 try {
-                    TeamspeakUser user = null;
-                    for (TeamspeakUser u : userdatabase) {
+                    User user = null;
+                    for (User u : userdatabase) {
                         if(e.getClientId() == u.isuID()){
                             user = u;
                             break;
@@ -247,7 +246,7 @@ public class CoreExp {
                     }
 
 
-                    for (TeamspeakUser u : userdatabase) {
+                    for (User u : userdatabase) {
                         if(u.isLoginNotifyStatus()) {
                             if(user != null)
                                 api.sendPrivateMessage(u.isuID(),user.getuName() + " left server.");
@@ -331,7 +330,7 @@ public class CoreExp {
                     if (message.startsWith("!last")) {
                         api.sendPrivateMessage(e.getInvokerId(), printLastUsers());
                     } else if (message.startsWith("!use loginnotify") || message.startsWith("!ul")) {
-                        for (TeamspeakUser u : userdatabase) {
+                        for (User u : userdatabase) {
                             if (e.getInvokerId() == u.isuID()) {
                                 if (u.isLoginNotifyStatus()) {
                                     u.setLoginNotifyStatus(false);
@@ -344,7 +343,7 @@ public class CoreExp {
                             }
                         }
                     } else if (message.startsWith("!wakeup")){
-                        for (TeamspeakUser u : userdatabase) {
+                        for (User u : userdatabase) {
                             if (e.getInvokerId() == u.isuID()) {
                                 try {
                                     u.setWakeUp(message.substring(8));
@@ -367,7 +366,7 @@ public class CoreExp {
                         api.sendPrivateMessage(e.getInvokerId(), ": !use loginnotify "  );
                     } else if (message.startsWith("!mytime")) {
                         //api.sendPrivateMessage(e.getInvokerId(), ": !use notify " );
-                        for (TeamspeakUser u : userdatabase) {
+                        for (User u : userdatabase) {
                             if (e.getInvokerId() == u.isuID()) {
                                 api.sendPrivateMessage(e.getInvokerId(), "Total time : " + u.getTotalTimeString());
                             }
@@ -379,7 +378,7 @@ public class CoreExp {
                             switch (cmd[1]) {
                                 case "all": {
                                     for (String filename : saveSupport.getAllFilesName()) {
-                                        TeamspeakUser user = (TeamspeakUser) saveSupport.load(filename);
+                                        User user = (User) saveSupport.load(filename);
                                         if (user == null) continue;
                                         String lastLoginDate = saveSupport.getFileLastModified(filename);
                                         api.sendPrivateMessage(e.getInvokerId(),
@@ -392,7 +391,7 @@ public class CoreExp {
                                     break;
                                 }
                                 case "users": {
-                                    for (TeamspeakUser u : userdatabase) {
+                                    for (User u : userdatabase) {
                                         api.sendPrivateMessage(e.getInvokerId(),
                                                 "\n Name: " + u.getuName()
                                                         + "\n Identifier: " + u.getuUnicID()
@@ -401,7 +400,7 @@ public class CoreExp {
                                     break;
                                 }
                                 case "user": {
-                                    TeamspeakUser user = (TeamspeakUser) saveSupport.load(cmd[2]);
+                                    User user = (User) saveSupport.load(cmd[2]);
                                     String lastlogindate = saveSupport.getFileLastModified(cmd[2]);
                                     api.sendPrivateMessage(e.getInvokerId(),
                                             "\n Name: " + user.getuName()
@@ -430,7 +429,7 @@ public class CoreExp {
     }
 
     private static void closeBot(String uID) {
-        for (TeamspeakUser u : userdatabase) {
+        for (User u : userdatabase) {
             u.updateTotalTime();
             saveSupport.save(u);
         }

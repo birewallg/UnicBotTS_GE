@@ -1,5 +1,8 @@
-package local.bwg.model;
+package local.bwg;
 
+import local.bwg.model.InterfaceUser;
+import local.bwg.support.FileReaderWriterExp;
+import local.bwg.support.SaveSupport;
 import org.json.JSONObject;
 
 import java.io.Serializable;
@@ -7,9 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
-public class TeamspeakUser extends AbstractUser implements Serializable {
+public class User implements Serializable, InterfaceUser {
     private static final long serialVersionUID = -3295590026052296592L;
-    private static final Logger logger = Logger.getLogger(TeamspeakUser.class.getName());
+    private static final Logger logger = Logger.getLogger(User.class.getName());
 
     private String uName = "unknown";
     private int uID = 0;
@@ -24,6 +27,7 @@ public class TeamspeakUser extends AbstractUser implements Serializable {
     @Override
     public JSONObject getJSONObject() {
         JSONObject json = new JSONObject();
+        json.put("ClassName", "TeamspeakUser");
         json.put("uName", this.getuName());
         json.put("uID", this.isuID());
         json.put("uUnicID", this.getuUnicID());
@@ -36,9 +40,10 @@ public class TeamspeakUser extends AbstractUser implements Serializable {
     }
 
     @Override
-    public void loadFromSirializeble(Object object) {
+    public boolean loadFromSirializeble(String source) {
         try {
-            TeamspeakUser user = (TeamspeakUser) object;
+            SaveSupport saveSupport = new FileReaderWriterExp();
+            User user = (User) saveSupport.load(source);
             this.uName = user.uName;
             this.uID = user.uID;
             this.uUnicID = user.uUnicID;
@@ -47,18 +52,25 @@ public class TeamspeakUser extends AbstractUser implements Serializable {
             this.totalTime = user.totalTime;
             this.wakeUp = user.wakeUp;
             this.loginNotifyStatus = user.loginNotifyStatus;
+            return true;
         } catch (Exception ignore) {
+            logger.info("LoadFromSirializeble Error: " + source);
         }
+        return false;
     }
 
-    public TeamspeakUser() { }
+    public User() {
+        logger.info("TeamspeakUser init: None");
+    }
 
-    public TeamspeakUser(String name, int id, String uUnicID){
+    public User(String name, int id, String uUnicID){
         this.uName = name;
         this.uID = id;
         this.uUnicID = uUnicID;
 
         updateTime();
+
+        logger.info("TeamspeakUser init: " + uUnicID);
     }
 
     public void updateTime() {

@@ -10,7 +10,7 @@ public class TelegramUser implements Serializable {
     private boolean subscribe = false;
 
 
-    TelegramUser(String id){
+    public TelegramUser(String id){
         this.uID = id;
     }
 
