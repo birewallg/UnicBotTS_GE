@@ -1,10 +1,10 @@
 package local.bwg.convertor;
 
+import com.google.gson.Gson;
 import local.bwg.model.InterfaceUser;
 import local.bwg.User;
 import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -44,9 +44,11 @@ public class JsonConvertor {
                 logger.info("Convert error! File: " + filename);
                 continue;
             }
-            JSONObject json = user.getJSONObject();
-            jsonFileWriter(user.getJSONObject(), toPath, filename);
-            logger.info("Convert object: " + json);
+            //JSONObject json = user.getJSONObject();
+            Gson gson = new Gson();
+            String json = gson.toJson(user);
+            jsonFileWriter(json, toPath, filename);
+            logger.info("Convert Done! object: " + json);
         }
     }
 
@@ -57,9 +59,9 @@ public class JsonConvertor {
      * @param filename filename
      */
     @SuppressWarnings("UnusedReturnValue")
-    public boolean jsonFileWriter(JSONObject json, String path, String filename) {
+    public boolean jsonFileWriter(String json, String path, String filename) {
         try (FileWriter file = new FileWriter(path + filename)) {
-            file.write(json.toString());
+            file.write(json);
             file.flush();
             return true;
         } catch (IOException exception) {

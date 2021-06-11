@@ -24,7 +24,12 @@ public class User implements Serializable, InterfaceUser {
 
     private boolean loginNotifyStatus = false;
 
+    /**
+     * Convert model to SimpleJson
+     * @return json object
+     */
     @Override
+    @Deprecated
     public JSONObject getJSONObject() {
         JSONObject json = new JSONObject();
         json.put("ClassName", "TeamspeakUser");
