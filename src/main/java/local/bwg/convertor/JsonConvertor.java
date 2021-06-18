@@ -39,17 +39,16 @@ public class JsonConvertor {
         );
 
         SaveSupport saveSupport = new FileReaderWriterExp();
-        for (String filename : saveSupport.getAllFilesName()) {
+        saveSupport.getAllFilesName().forEach(filename -> {
             if (!user.loadFromSirializeble(filename)) {
                 logger.info("Convert error! File: " + filename);
-                continue;
+                return;
             }
-            //JSONObject json = user.getJSONObject();
             Gson gson = new Gson();
             String json = gson.toJson(user);
             jsonFileWriter(json, toPath, filename);
             logger.info("Convert Done! Object: " + json);
-        }
+        });
     }
 
     /**

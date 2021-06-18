@@ -43,11 +43,6 @@ public class TelegramUser implements Serializable, InterfaceUser {
     }
 
     @Override
-    public JSONObject getJSONObject() {
-        return null;
-    }
-
-    @Override
     public boolean loadFromSirializeble(String source) {
         return false;
     }
