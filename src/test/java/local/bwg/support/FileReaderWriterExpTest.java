@@ -1,17 +1,23 @@
 package local.bwg.support;
 
-import local.bwg.User;
+import local.bwg.model.TeamspeakUser;
 import org.junit.jupiter.api.Test;
 
 public class FileReaderWriterExpTest {
-    @Test
-    public void loadFromJson() {
-        new FileReaderWriterExp().loadFromJson("QYYAhV7Xy77zhOsV6g4iNGfNZIQ=");
-    }
 
     @Test
     public void saveFromJson() {
-        User user = new FileReaderWriterExp().loadFromJson("QYYAhV7Xy77zhOsV6g4iNGfNZIQ=");
-        new FileReaderWriterExp().saveInJson(user);
+        TeamspeakUser user = new FileReaderWriterExp().loadJson("QYYAhV7Xy77zhOsV6g4iNGfNZIQ=");
+        new FileReaderWriterExp().saveJson(user);
     }
+
+    @Test
+    public void loadFromJson() {
+        new FileReaderWriterExp()
+                .getAllFilesName("udata-json")
+                .forEach(file -> {
+            new FileReaderWriterExp().loadJson(file);
+        });
+    }
+
 }

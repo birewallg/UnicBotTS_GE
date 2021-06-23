@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'local.bwg'
-version '2.0'
+version '2.5'
 
 sourceCompatibility = 1.8
 
@@ -17,9 +17,12 @@ dependencies {
     //compile group: 'com.github.theholywaffle', name: 'teamspeak3-api', version: '1.2.0'
     compile "org.telegram:telegrambots:4.9"
     compile group: 'com.github.theholywaffle', name: 'teamspeak3-api', version: '1.0.14'
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    //compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.31'
+
     // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
-    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    //implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
     // https://github.com/google/gson/blob/master/UserGuide.md#TOC-Gson-With-Maven
     implementation 'com.google.code.gson:gson:2.8.7'
 
@@ -36,7 +39,8 @@ jar {
     manifest {
         attributes('Implementation-Title': project.name,
                 'Implementation-Version': project.version,
-                'Main-Class': 'local.bwg.convertor.JsonConvertor')
+                /*'Main-Class': 'local.bwg.convertor.JsonConvertor')*/
+                'Main-Class': 'local.bwg.App')
     }
 
     from {

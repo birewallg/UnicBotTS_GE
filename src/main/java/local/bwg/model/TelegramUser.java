@@ -1,11 +1,7 @@
-package local.bwg.telegram;
+package local.bwg.model;
 
-import local.bwg.User;
-import local.bwg.model.InterfaceUser;
-import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
 import local.bwg.support.TelegramUserSaver;
-import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.Objects;

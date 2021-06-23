@@ -2,11 +2,11 @@ package local.bwg.convertor;
 
 import com.google.gson.Gson;
 import local.bwg.model.InterfaceUser;
-import local.bwg.User;
+import local.bwg.model.TeamspeakUser;
 import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
 import local.bwg.support.TelegramUserSaver;
-import local.bwg.telegram.TelegramUser;
+import local.bwg.model.TelegramUser;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,7 +21,7 @@ public class JsonConvertor {
 
     public static void main(String[] args) {
         JsonConvertor jsonConvertor = new JsonConvertor();
-        jsonConvertor.convert(new User(), null, "udata-json/", new FileReaderWriterExp());
+        jsonConvertor.convert(new TeamspeakUser(), null, "udata-json/", new FileReaderWriterExp());
         jsonConvertor.convert(new TelegramUser("255397596"), null, "udata_tg-json/", new TelegramUserSaver());
     }
 
@@ -39,8 +39,7 @@ public class JsonConvertor {
                 + createDirectory(toPath)
         );
 
-        SaveSupport saveSupport = ss;
-        saveSupport.getAllFilesName().forEach(filename -> {
+        ss.getAllFilesName(null).forEach(filename -> {
             if (!user.loadFromSirializeble(filename)) {
                 logger.info("Convert error! File: " + filename);
                 return;

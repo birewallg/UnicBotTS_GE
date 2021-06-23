@@ -1,6 +1,7 @@
 package local.bwg.telegram;
 
 import local.bwg.model.BotOptions;
+import local.bwg.model.TelegramUser;
 import local.bwg.support.SaveSupport;
 import local.bwg.support.TelegramUserSaver;
 import local.bwg.support.VLCSupport;
@@ -29,8 +30,8 @@ public class TelegramBotCore extends TelegramLongPollingBot {
     }
 
     TelegramBotCore() {
-        ArrayList<String> uIDlist = save.getAllFilesName();
-        uIDlist.forEach(e -> observers.add((TelegramUser) save.load(e)));
+        ArrayList<String> uIDlist = save.getAllFilesName(null);
+        uIDlist.forEach(e -> observers.add((TelegramUser) save.loadJson(e)));
     }
 
     @Override
@@ -57,7 +58,7 @@ public class TelegramBotCore extends TelegramLongPollingBot {
                 TelegramUser tu = new TelegramUser(id);
                 if (!observers.contains(tu)) {
                     tu.setSubscribe(true);
-                    save.save((Object) tu);
+                    save.saveJson((Object) tu);
                     observers.add(tu);
                     sendMessage(id, convertToUTF8("вы подписаны"));
                 } else

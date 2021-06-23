@@ -1,7 +1,7 @@
 package local.bwg.support;
 
 import com.google.gson.Gson;
-import local.bwg.User;
+import local.bwg.model.TeamspeakUser;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -28,9 +28,10 @@ public class FileReaderWriterExp implements SaveSupport {
     }
 
     @Override
+    @Deprecated
     public boolean save(Object obj) {
         try {
-            User userObj = (User) obj;
+            TeamspeakUser userObj = (TeamspeakUser) obj;
             FileOutputStream f = new FileOutputStream(new File("udata\\"+userObj.getuUnicID().replaceAll("/", "")));
             ObjectOutputStream o = new ObjectOutputStream(f);
 
@@ -46,10 +47,10 @@ public class FileReaderWriterExp implements SaveSupport {
     }
 
     @Override
-    public boolean saveInJson(Object obj) {
-        try (FileWriter file = new FileWriter("udata-json\\" + ((User) obj).getuUnicID().replaceAll("/", ""))) {
+    public boolean saveJson(Object obj) {
+        try (FileWriter file = new FileWriter("udata-json\\" + ((TeamspeakUser) obj).getuUnicID().replaceAll("/", ""))) {
             Gson gson = new Gson();
-            file.write(gson.toJson(obj, User.class));
+            file.write(gson.toJson(obj, TeamspeakUser.class));
             file.flush();
             return true;
         } catch (IOException exception) {
@@ -59,14 +60,15 @@ public class FileReaderWriterExp implements SaveSupport {
     }
 
     @Override
-    public User load(String path) {
+    @Deprecated
+    public TeamspeakUser load(String path) {
         try {
             FileInputStream fi = new FileInputStream(
                     new File("udata\\"
                             + path.replaceAll("/", "")));
             ObjectInputStream oi = new ObjectInputStream(fi);
             Object obj = oi.readObject();
-            User userObj = (User) obj;
+            TeamspeakUser userObj = (TeamspeakUser) obj;
 
             oi.close();
             fi.close();
@@ -78,7 +80,7 @@ public class FileReaderWriterExp implements SaveSupport {
     }
 
     @Override
-    public User loadFromJson(String path) {
+    public TeamspeakUser loadJson(String path) {
         try(FileReader reader = new FileReader(
                 "udata-json\\" + path.replaceAll("/", ""))){
             int c;
@@ -89,7 +91,7 @@ public class FileReaderWriterExp implements SaveSupport {
             logger.info("Read Done! Object: " + stringBuilder);
 
             Gson gson = new Gson();
-            return gson.fromJson(stringBuilder.toString(), User.class);
+            return gson.fromJson(stringBuilder.toString(), TeamspeakUser.class);
         } catch(IOException ex) {
             logger.warning("fileerr");
             return null;
@@ -97,8 +99,10 @@ public class FileReaderWriterExp implements SaveSupport {
     }
 
     @Override
-    public ArrayList<String> getAllFilesName() {
-        File folder = new File("udata\\");
+    public ArrayList<String> getAllFilesName(String path) {
+        File folder = new File(
+                (path == null) ? "udata\\" : path
+        );
         File[] listOfFiles = folder.listFiles();
         ArrayList<String> list = new ArrayList<>();
         for (File file : listOfFiles) {

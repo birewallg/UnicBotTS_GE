@@ -1,18 +1,22 @@
 package local.bwg.support;
 
-import local.bwg.telegram.TelegramUser;
+import local.bwg.model.TelegramUser;
 import org.junit.jupiter.api.Test;
 
 public class TelegramUserSaverTest {
 
     @Test
     public void saveInJson() {
-        new TelegramUserSaver().loadFromJson("255397596");
+        TelegramUser user = (TelegramUser) new TelegramUserSaver().loadJson("255397596");
+        new TelegramUserSaver().saveJson(user);
     }
 
     @Test
     public void loadFromJson() {
-        TelegramUser user = (TelegramUser) new TelegramUserSaver().loadFromJson("255397596");
-        new TelegramUserSaver().saveInJson(user);
+        new TelegramUserSaver()
+                .getAllFilesName("udata_tg-json")
+                .forEach(file -> {
+            new TelegramUserSaver().loadJson(file);
+        });
     }
 }

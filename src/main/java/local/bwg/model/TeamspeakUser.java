@@ -1,6 +1,5 @@
-package local.bwg;
+package local.bwg.model;
 
-import local.bwg.model.InterfaceUser;
 import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
 
@@ -9,9 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
-public class User implements Serializable, InterfaceUser {
+public class TeamspeakUser implements Serializable, InterfaceUser {
     private static final long serialVersionUID = -3295590026052296592L;
-    private static final Logger logger = Logger.getLogger(User.class.getName());
+    private static final Logger logger = Logger.getLogger(TeamspeakUser.class.getName());
 
     private String uName = "unknown";
     private int uID = 0;
@@ -45,7 +44,7 @@ public class User implements Serializable, InterfaceUser {
     public boolean loadFromSirializeble(String source) {
         try {
             SaveSupport saveSupport = new FileReaderWriterExp();
-            User user = (User) saveSupport.load(source);
+            TeamspeakUser user = (TeamspeakUser) saveSupport.load(source);
             this.uName = user.uName;
             this.uID = user.uID;
             this.uUnicID = user.uUnicID;
@@ -61,11 +60,11 @@ public class User implements Serializable, InterfaceUser {
         return false;
     }
 
-    public User() {
+    public TeamspeakUser() {
         logger.info("TeamspeakUser init: None");
     }
 
-    public User(String name, int id, String uUnicID){
+    public TeamspeakUser(String name, int id, String uUnicID){
         this.uName = name;
         this.uID = id;
         this.uUnicID = uUnicID;

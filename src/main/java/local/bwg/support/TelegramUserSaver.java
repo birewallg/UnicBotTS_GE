@@ -1,8 +1,7 @@
 package local.bwg.support;
 
 import com.google.gson.Gson;
-import local.bwg.User;
-import local.bwg.telegram.TelegramUser;
+import local.bwg.model.TelegramUser;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ public class TelegramUserSaver implements SaveSupport {
     }
 
     @Override
+    @Deprecated
     public boolean save(Object obj) {
         try {
             FileOutputStream f = new FileOutputStream(new File("udata_tg\\",((TelegramUser) obj).getuID()));
@@ -34,7 +34,7 @@ public class TelegramUserSaver implements SaveSupport {
     }
 
     @Override
-    public boolean saveInJson(Object obj) {
+    public boolean saveJson(Object obj) {
         try (FileWriter file = new FileWriter("udata_tg-json\\"+((TelegramUser) obj).getuID())) {
             Gson gson = new Gson();
             file.write(gson.toJson(obj, TelegramUser.class));
@@ -47,6 +47,7 @@ public class TelegramUserSaver implements SaveSupport {
     }
 
     @Override
+    @Deprecated
     public Object load(String line) {
         try {
             FileInputStream fi = new FileInputStream(
@@ -65,7 +66,7 @@ public class TelegramUserSaver implements SaveSupport {
         return null;
     }
     @Override
-    public TelegramUser loadFromJson(String path) {
+    public TelegramUser loadJson(String path) {
         /*try {
             FileInputStream fi = new FileInputStream(
                     new File("udata_tg\\" + line));
@@ -99,10 +100,12 @@ public class TelegramUserSaver implements SaveSupport {
     }
 
     @Override
-    public ArrayList<String> getAllFilesName() {
+    public ArrayList<String> getAllFilesName(String path) {
         ArrayList<String> list = new ArrayList<>();
         try {
-            File folder = new File("udata_tg\\");
+            File folder = new File(
+                    (path == null) ? "udata_tg\\" : path
+            );
             File[] listOfFiles = folder.listFiles();
             for (File file : listOfFiles) {
                 if (file.isFile()) {
