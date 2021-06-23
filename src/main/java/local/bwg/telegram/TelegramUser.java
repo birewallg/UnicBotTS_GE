@@ -1,17 +1,37 @@
 package local.bwg.telegram;
 
+import local.bwg.User;
 import local.bwg.model.InterfaceUser;
+import local.bwg.support.FileReaderWriterExp;
+import local.bwg.support.SaveSupport;
+import local.bwg.support.TelegramUserSaver;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class TelegramUser implements Serializable, InterfaceUser {
     private static final long serialVersionUID = -3295590026052296594L;
 
+    private static final Logger logger = Logger.getLogger(TelegramUser.class.getName());
+
     private String uID;
     private boolean subscribe = false;
 
+    @Override
+    public boolean loadFromSirializeble(String source) {
+        try {
+            SaveSupport saveSupport = new TelegramUserSaver();
+            TelegramUser user = (TelegramUser) saveSupport.load(source);
+            this.uID = user.uID;
+            this.subscribe = user.subscribe;
+            return true;
+        } catch (Exception ignore) {
+            logger.info("LoadFromSirializeble Error: " + source);
+            return false;
+        }
+    }
 
     public TelegramUser(String id){
         this.uID = id;
@@ -40,10 +60,5 @@ public class TelegramUser implements Serializable, InterfaceUser {
     @Override
     public int hashCode() {
         return Objects.hash(uID);
-    }
-
-    @Override
-    public boolean loadFromSirializeble(String source) {
-        return false;
     }
 }

@@ -5,6 +5,8 @@ import local.bwg.model.InterfaceUser;
 import local.bwg.User;
 import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
+import local.bwg.support.TelegramUserSaver;
+import local.bwg.telegram.TelegramUser;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -19,9 +21,8 @@ public class JsonConvertor {
 
     public static void main(String[] args) {
         JsonConvertor jsonConvertor = new JsonConvertor();
-        //if (args.length == 2) jsonConvertor.convert(null, args[0], args[1]);
-        jsonConvertor.convert(new User(), null, "udata-json/");
-        //jsonConvertor.convert(new TelegramUser(), null, "udata_tg-json/");
+        jsonConvertor.convert(new User(), null, "udata-json/", new FileReaderWriterExp());
+        jsonConvertor.convert(new TelegramUser("255397596"), null, "udata_tg-json/", new TelegramUserSaver());
     }
 
     public JsonConvertor() {
@@ -31,21 +32,21 @@ public class JsonConvertor {
     /**
      * convert all files to json
      */
-    private void convert(InterfaceUser user, String fromPath, String toPath) {
+    public void convert(InterfaceUser user, String fromPath, String toPath, SaveSupport ss) {
         logger.info(
                 "Create directory "
                 + toPath + ": "
                 + createDirectory(toPath)
         );
 
-        SaveSupport saveSupport = new FileReaderWriterExp();
+        SaveSupport saveSupport = ss;
         saveSupport.getAllFilesName().forEach(filename -> {
             if (!user.loadFromSirializeble(filename)) {
                 logger.info("Convert error! File: " + filename);
                 return;
             }
             Gson gson = new Gson();
-            String json = gson.toJson(user);
+            String json = gson.toJson(user, user.getClass());
             jsonFileWriter(json, toPath, filename);
             logger.info("Convert Done! Object: " + json);
         });
@@ -58,7 +59,7 @@ public class JsonConvertor {
      * @param filename filename
      */
     @SuppressWarnings("UnusedReturnValue")
-    public boolean jsonFileWriter(String json, String path, String filename) {
+    private boolean jsonFileWriter(String json, String path, String filename) {
         try (FileWriter file = new FileWriter(path + filename)) {
             file.write(json);
             file.flush();

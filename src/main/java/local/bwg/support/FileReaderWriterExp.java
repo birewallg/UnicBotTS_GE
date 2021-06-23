@@ -1,5 +1,6 @@
 package local.bwg.support;
 
+import com.google.gson.Gson;
 import local.bwg.User;
 
 import java.io.*;
@@ -16,7 +17,6 @@ public class FileReaderWriterExp implements SaveSupport {
             Date date = new Date();
             SimpleDateFormat formatForDateNow
                     = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss' : '");
-
             writer.write(formatForDateNow.format(date) + data);
             writer.append("\n");
             writer.flush();
@@ -41,9 +41,21 @@ public class FileReaderWriterExp implements SaveSupport {
             return true;
         } catch (IOException e) {
             logger.warning("fileerr");
-            e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public boolean saveInJson(Object obj) {
+        try (FileWriter file = new FileWriter("udata-json\\" + ((User) obj).getuUnicID().replaceAll("/", ""))) {
+            Gson gson = new Gson();
+            file.write(gson.toJson(obj, User.class));
+            file.flush();
+            return true;
+        } catch (IOException exception) {
+            logger.warning("fileerr");
+            return false;
+        }
     }
 
     @Override
@@ -61,9 +73,27 @@ public class FileReaderWriterExp implements SaveSupport {
             return userObj;
         } catch (IOException | ClassNotFoundException e) {
             logger.warning("fileerr");
-            e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public User loadFromJson(String path) {
+        try(FileReader reader = new FileReader(
+                "udata-json\\" + path.replaceAll("/", ""))){
+            int c;
+            StringBuilder stringBuilder = new StringBuilder();
+            while((c=reader.read()) != -1){
+                stringBuilder.append((char)c);
+            }
+            logger.info("Read Done! Object: " + stringBuilder);
+
+            Gson gson = new Gson();
+            return gson.fromJson(stringBuilder.toString(), User.class);
+        } catch(IOException ex) {
+            logger.warning("fileerr");
+            return null;
+        }
     }
 
     @Override
@@ -74,7 +104,6 @@ public class FileReaderWriterExp implements SaveSupport {
         for (File file : listOfFiles) {
             if (file.isFile()) {
                 list.add(file.getName());
-                //System.out.println(file.getName());
             }
         }
         return list;
@@ -83,7 +112,6 @@ public class FileReaderWriterExp implements SaveSupport {
     @Override
     public String getFileLastModified(String filename) {
         File file = new File("udata\\" + filename);
-        //System.out.println("Before Format : " + file.lastModified());
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH|mm");
         return sdf.format(file.lastModified());
     }
