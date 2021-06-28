@@ -20,7 +20,7 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.31'
 
     // https://github.com/google/gson/blob/master/UserGuide.md#TOC-Gson-With-Maven
-    implementation 'com.google.code.gson:gson:2.8.7'
+    compile 'com.google.code.gson:gson:2.8.7'
 
     testCompile ('org.junit.jupiter:junit-jupiter:5.6.0')
 

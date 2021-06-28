@@ -40,7 +40,7 @@ public class TeamspeakUser implements Serializable, InterfaceUser {
         return json;
     }*/
 
-    @Override
+    /*@Override
     public boolean loadFromSirializeble(String source) {
         try {
             SaveSupport saveSupport = new FileReaderWriterExp();
@@ -58,7 +58,7 @@ public class TeamspeakUser implements Serializable, InterfaceUser {
             logger.info("LoadFromSirializeble Error: " + source);
         }
         return false;
-    }
+    }*/
 
     public TeamspeakUser() {
         logger.info("TeamspeakUser init: None");

@@ -17,7 +17,7 @@ public class BotOptions {
     }
 
     public BotOptions() {
-        this.loadOptionsFromFile("", "options");
+        this.loadOptionsFromFile("udata\\options\\", "options");
     }
 
     public String getTelegramBotName() {

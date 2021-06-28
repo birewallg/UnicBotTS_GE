@@ -35,7 +35,7 @@ public class TelegramUserSaver implements SaveSupport {
 
     @Override
     public boolean saveJson(Object obj) {
-        try (FileWriter file = new FileWriter("udata_tg-json\\"+((TelegramUser) obj).getuID())) {
+        try (FileWriter file = new FileWriter("udata\\udata_tg-json\\"+((TelegramUser) obj).getuID())) {
             Gson gson = new Gson();
             file.write(gson.toJson(obj, TelegramUser.class));
             file.flush();
@@ -51,7 +51,7 @@ public class TelegramUserSaver implements SaveSupport {
     public Object load(String line) {
         try {
             FileInputStream fi = new FileInputStream(
-                    new File("udata_tg\\" + line));
+                    new File("udata_tg-json\\" + line));
             ObjectInputStream oi = new ObjectInputStream(fi);
 
             TelegramUser userObj = (TelegramUser) oi.readObject();
@@ -67,23 +67,8 @@ public class TelegramUserSaver implements SaveSupport {
     }
     @Override
     public TelegramUser loadJson(String path) {
-        /*try {
-            FileInputStream fi = new FileInputStream(
-                    new File("udata_tg\\" + line));
-            ObjectInputStream oi = new ObjectInputStream(fi);
-
-            TelegramUser userObj = (TelegramUser) oi.readObject();
-
-            oi.close();
-            fi.close();
-            return userObj;
-        } catch (IOException | ClassNotFoundException e) {
-            logger.warning("fileerr");
-            e.printStackTrace();
-        }
-        return null;*/
         try(FileReader reader = new FileReader(
-                "udata_tg-json\\" + path.replaceAll("/", ""))){
+                "udata\\udata_tg-json\\" + path.replaceAll("/", ""))){
             int c;
             StringBuilder stringBuilder = new StringBuilder();
             while((c=reader.read()) != -1){
@@ -104,7 +89,7 @@ public class TelegramUserSaver implements SaveSupport {
         ArrayList<String> list = new ArrayList<>();
         try {
             File folder = new File(
-                    (path == null) ? "udata_tg\\" : path
+                    (path == null) ? "udata\\udata_tg-json\\" : path
             );
             File[] listOfFiles = folder.listFiles();
             for (File file : listOfFiles) {

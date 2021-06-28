@@ -15,7 +15,7 @@ public class TelegramUser implements Serializable, InterfaceUser {
     private String uID;
     private boolean subscribe = false;
 
-    @Override
+    /*@Override
     public boolean loadFromSirializeble(String source) {
         try {
             SaveSupport saveSupport = new TelegramUserSaver();
@@ -27,7 +27,7 @@ public class TelegramUser implements Serializable, InterfaceUser {
             logger.info("LoadFromSirializeble Error: " + source);
             return false;
         }
-    }
+    }*/
 
     public TelegramUser(String id){
         this.uID = id;

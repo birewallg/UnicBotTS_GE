@@ -14,7 +14,7 @@ public class FileReaderWriterExpTest {
     @Test
     public void loadFromJson() {
         new FileReaderWriterExp()
-                .getAllFilesName("udata-json")
+                .getAllFilesName("udata\\udata-json\\")
                 .forEach(file -> {
             new FileReaderWriterExp().loadJson(file);
         });

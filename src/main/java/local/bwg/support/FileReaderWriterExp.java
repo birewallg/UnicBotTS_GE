@@ -32,7 +32,7 @@ public class FileReaderWriterExp implements SaveSupport {
     public boolean save(Object obj) {
         try {
             TeamspeakUser userObj = (TeamspeakUser) obj;
-            FileOutputStream f = new FileOutputStream(new File("udata\\"+userObj.getuUnicID().replaceAll("/", "")));
+            FileOutputStream f = new FileOutputStream(new File("udata\\udata\\"+userObj.getuUnicID().replaceAll("/", "")));
             ObjectOutputStream o = new ObjectOutputStream(f);
 
             o.writeObject(userObj);
@@ -48,7 +48,7 @@ public class FileReaderWriterExp implements SaveSupport {
 
     @Override
     public boolean saveJson(Object obj) {
-        try (FileWriter file = new FileWriter("udata-json\\" + ((TeamspeakUser) obj).getuUnicID().replaceAll("/", ""))) {
+        try (FileWriter file = new FileWriter("udata\\udata-json\\" + ((TeamspeakUser) obj).getuUnicID().replaceAll("/", ""))) {
             Gson gson = new Gson();
             file.write(gson.toJson(obj, TeamspeakUser.class));
             file.flush();
@@ -64,7 +64,7 @@ public class FileReaderWriterExp implements SaveSupport {
     public TeamspeakUser load(String path) {
         try {
             FileInputStream fi = new FileInputStream(
-                    new File("udata\\"
+                    new File("udata\\udata\\"
                             + path.replaceAll("/", "")));
             ObjectInputStream oi = new ObjectInputStream(fi);
             Object obj = oi.readObject();
@@ -82,7 +82,7 @@ public class FileReaderWriterExp implements SaveSupport {
     @Override
     public TeamspeakUser loadJson(String path) {
         try(FileReader reader = new FileReader(
-                "udata-json\\" + path.replaceAll("/", ""))){
+                "udata\\udata-json\\" + path.replaceAll("/", ""))){
             int c;
             StringBuilder stringBuilder = new StringBuilder();
             while((c=reader.read()) != -1){
@@ -115,7 +115,7 @@ public class FileReaderWriterExp implements SaveSupport {
 
     @Override
     public String getFileLastModified(String filename) {
-        File file = new File("udata\\" + filename);
+        File file = new File("udata\\udata\\" + filename);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH|mm");
         return sdf.format(file.lastModified());
     }

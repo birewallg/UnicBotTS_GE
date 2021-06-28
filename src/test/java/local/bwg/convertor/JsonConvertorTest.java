@@ -11,7 +11,7 @@ public class JsonConvertorTest {
     @Test
     public void convert() {
         JsonConvertor jsonConvertor = new JsonConvertor();
-        jsonConvertor.convert(new TeamspeakUser(), null, "udata-json/", new FileReaderWriterExp());
-        jsonConvertor.convert(new TelegramUser("255397596"), null, "udata_tg-json/", new TelegramUserSaver());
+        jsonConvertor.convert(new TeamspeakUser(), null, "udata\\udata-json\\", new FileReaderWriterExp());
+        jsonConvertor.convert(new TelegramUser("255397596"), null, "udata\\udata_tg-json\\", new TelegramUserSaver());
     }
 }

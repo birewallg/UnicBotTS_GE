@@ -14,7 +14,7 @@ public class TelegramUserSaverTest {
     @Test
     public void loadFromJson() {
         new TelegramUserSaver()
-                .getAllFilesName("udata_tg-json")
+                .getAllFilesName("udata\\udata_tg-json\\")
                 .forEach(file -> {
             new TelegramUserSaver().loadJson(file);
         });
