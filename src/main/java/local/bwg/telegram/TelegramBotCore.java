@@ -38,9 +38,9 @@ public class TelegramBotCore extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         String message = update.getMessage().getText();
         logger.info(convertToUTF8(message));
-        logger.info(message);
-        logger.info(convertToASCII(message));
-        System.out.println(convertToUTF8(message));
+        //logger.info(message);
+        //logger.info(convertToASCII(message));
+        //System.out.println(convertToUTF8(message));
         messageSeparator(update.getMessage().getChatId().toString(), message);
     }
 

@@ -23,10 +23,10 @@ import java.util.logging.Level;
 import static com.github.theholywaffle.teamspeak3.api.ChannelProperty.CHANNEL_NAME;
 
 /**
- * Core 2.0
+ * Core 2.5
  */
 
-public class CoreExp {
+public class TeamspeakCoreExp {
     private static volatile int clientId;
 
     private static ArrayList<TeamspeakUser> userdatabase = new ArrayList<>();
@@ -37,10 +37,9 @@ public class CoreExp {
 
     private static AppTelegramInline appTelegramInline = new AppTelegramInline();
 
-    private static String track = "unknown";
-    private static boolean trackNotify = true;
+    private TS3Query ts3Query = null;
 
-    CoreExp(String address, final String port, final String login, final String password) {
+    TeamspeakCoreExp(String address, final String port, final String login, final String password) {
 
         System.out.println(address + " | " + port + " | " + login + " | " + password);
 
@@ -64,10 +63,10 @@ public class CoreExp {
             }
         });
 
-        final TS3Query query = new TS3Query(cfg);
-        query.connect();
+        ts3Query = new TS3Query(cfg);
+        ts3Query.connect();
 
-        stuffThatOnlyEverNeedsToBeRunOnce(query.getApi());
+        stuffThatOnlyEverNeedsToBeRunOnce(ts3Query.getApi());
     }
 
     private static String printLastUsers() {
@@ -176,7 +175,7 @@ public class CoreExp {
         }
     }
 
-    private static void stuffThatOnlyEverNeedsToBeRunOnce(final TS3Api api) {
+    private void stuffThatOnlyEverNeedsToBeRunOnce(final TS3Api api) {
 
         buckGroundTasks(api);
 
@@ -287,6 +286,7 @@ public class CoreExp {
                                     "\n !prev");
                 }
             }
+
             @Override
             public void onTextMessage(TextMessageEvent e) {
                 // Only react to channel messages not sent by the query itself
@@ -431,12 +431,13 @@ public class CoreExp {
         saveSupport.saveLog(filename, data);
     }
 
-    private static void closeBot(String uID) {
+    private void closeBot(String uID) {
         for (TeamspeakUser u : userdatabase) {
             u.updateTotalTime();
             saveSupport.saveJson(u);
         }
         saveLog(uID + ": shutdown 0");
+        ts3Query.exit();
         System.exit(0);
     }
 

@@ -17,16 +17,16 @@ dependencies {
     //compile group: 'com.github.theholywaffle', name: 'teamspeak3-api', version: '1.2.0'
     compile "org.telegram:telegrambots:4.9"
     compile group: 'com.github.theholywaffle', name: 'teamspeak3-api', version: '1.0.14'
-    //compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.31'
 
-    // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
-    //implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
     // https://github.com/google/gson/blob/master/UserGuide.md#TOC-Gson-With-Maven
     implementation 'com.google.code.gson:gson:2.8.7'
 
     testCompile ('org.junit.jupiter:junit-jupiter:5.6.0')
+
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    // compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+
 }
 
 test {

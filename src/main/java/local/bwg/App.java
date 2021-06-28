@@ -9,7 +9,7 @@ public class App {
     public static void main(String[] args) {
         try {
             BotOptions options = new BotOptions();
-            new CoreExp(
+            new TeamspeakCoreExp(
                     options.getTeamspeakBotIpAddress(),
                     options.getTeamspeakBotPort(),
                     options.getTeamspeakBotLogin(),

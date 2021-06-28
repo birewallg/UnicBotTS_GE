@@ -3,10 +3,10 @@ package local.bwg.convertor;
 import com.google.gson.Gson;
 import local.bwg.model.InterfaceUser;
 import local.bwg.model.TeamspeakUser;
+import local.bwg.model.TelegramUser;
 import local.bwg.support.FileReaderWriterExp;
 import local.bwg.support.SaveSupport;
 import local.bwg.support.TelegramUserSaver;
-import local.bwg.model.TelegramUser;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,6 +18,7 @@ import java.util.logging.Logger;
  */
 public class JsonConvertor {
     private static final Logger logger = Logger.getLogger(JsonConvertor.class.getName());
+
 
     public static void main(String[] args) {
         JsonConvertor jsonConvertor = new JsonConvertor();
